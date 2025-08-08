@@ -1,0 +1,282 @@
+{
+    "metadata": {
+      "title": "Just Command Runner - Journeyman Level",
+      "description": "Intermediate concepts and practical knowledge for effective just usage",
+      "version": "1.0.0",
+      "targetAge": "Developers with basic just knowledge",
+      "subject": "Just Command Runner Intermediate",
+      "mode": "hard"
+    },
+    "questions": [
+      {
+        "id": "ji001",
+        "question": "How do you make a recipe parameter optional with a default value?",
+        "choices": [
+          "param?: \"default\"",
+          "param = \"default\"",
+          "param || \"default\"",
+          "param=\"default\""
+        ],
+        "correctAnswer": 3,
+        "explanation": "Optional parameters with defaults are defined using param=\"default\" syntax. This allows the recipe to be called with or without that argument.",
+        "category": "Parameters",
+        "difficulty": "medium",
+        "tags": ["parameters", "defaults", "syntax"]
+      },
+      {
+        "id": "ji002",
+        "question": "What does the '@' prefix do before a command in a recipe?",
+        "choices": [
+          "Makes the command run in parallel",
+          "Suppresses echoing the command to stdout",
+          "Runs the command as root",
+          "Makes the command optional"
+        ],
+        "correctAnswer": 1,
+        "explanation": "The '@' prefix suppresses echoing the command itself to stdout, showing only the command's output. Useful for cleaner output when the command itself isn't important to see.",
+        "category": "Recipe Modifiers",
+        "difficulty": "medium",
+        "tags": ["modifiers", "output", "syntax"]
+      },
+      {
+        "id": "ji003",
+        "question": "How do you use environment variables in a justfile?",
+        "choices": [
+          "${VAR_NAME}",
+          "$VAR_NAME",
+          "{{VAR_NAME}}",
+          "env_var('VAR_NAME')"
+        ],
+        "correctAnswer": 3,
+        "explanation": "The env_var() function is used to access environment variables in expressions. In recipe bodies, you can use $VAR_NAME, but in just expressions use env_var('VAR_NAME').",
+        "category": "Environment Variables",
+        "difficulty": "medium",
+        "tags": ["environment", "variables", "functions"]
+      },
+      {
+        "id": "ji004",
+        "question": "What's the difference between '=' and ':=' when setting variables?",
+        "choices": [
+          "No difference, they're aliases",
+          "'=' is lazy evaluation, ':=' is immediate evaluation",
+          "'=' is for strings, ':=' is for commands",
+          "'=' is public, ':=' is private"
+        ],
+        "correctAnswer": 1,
+        "explanation": "'=' creates lazily-evaluated variables (evaluated when used), while ':=' creates immediately-evaluated variables (evaluated when parsed). This matters when using functions or shell commands.",
+        "category": "Variables",
+        "difficulty": "hard",
+        "tags": ["variables", "evaluation", "assignment"]
+      },
+      {
+        "id": "ji005",
+        "question": "How do you make a recipe private (hidden from --list)?",
+        "choices": [
+          "Start the recipe name with underscore (_)",
+          "Add 'private' keyword before the recipe",
+          "Put it in a separate file",
+          "Use the @private decorator"
+        ],
+        "correctAnswer": 0,
+        "explanation": "Recipes whose names start with an underscore are private and won't show up in 'just --list' output, though they can still be run directly if you know the name.",
+        "category": "Recipe Visibility",
+        "difficulty": "medium",
+        "tags": ["private", "visibility", "conventions"]
+      },
+      {
+        "id": "ji006",
+        "question": "What does the '+' prefix do for a variadic parameter?",
+        "choices": [
+          "Makes it numeric only",
+          "Requires at least one argument",
+          "Allows zero or more arguments",
+          "Concatenates arguments"
+        ],
+        "correctAnswer": 1,
+        "explanation": "The '+' prefix on a variadic parameter (like +args) means it requires at least one argument, while '*args' would accept zero or more arguments.",
+        "category": "Parameters",
+        "difficulty": "hard",
+        "tags": ["variadic", "parameters", "syntax"]
+      },
+      {
+        "id": "ji007",
+        "question": "How can you change the shell used to execute recipe commands?",
+        "choices": [
+          "set shell := [\"powershell\", \"-c\"]",
+          "shell = \"bash\"",
+          "use powershell",
+          "#!shell:bash"
+        ],
+        "correctAnswer": 0,
+        "explanation": "The 'set shell' setting allows you to change the shell interpreter used for recipe commands. You provide the command and its arguments as an array.",
+        "category": "Configuration",
+        "difficulty": "medium",
+        "tags": ["shell", "configuration", "settings"]
+      },
+      {
+        "id": "ji008",
+        "question": "What's the purpose of the 'dotenv-load' setting?",
+        "choices": [
+          "Loads environment variables from .env files",
+          "Creates a .env file template",
+          "Validates environment variables",
+          "Exports variables to .env"
+        ],
+        "correctAnswer": 0,
+        "explanation": "When 'set dotenv-load' is enabled (default), just automatically loads environment variables from .env files in the project directory.",
+        "category": "Configuration",
+        "difficulty": "medium",
+        "tags": ["dotenv", "environment", "configuration"]
+      },
+      {
+        "id": "ji009",
+        "question": "How do you run a recipe in a different directory?",
+        "choices": [
+          "just -d /path/to/dir recipe",
+          "just --working-directory /path/to/dir recipe",
+          "Both A and B are correct",
+          "cd /path/to/dir && just recipe"
+        ],
+        "correctAnswer": 2,
+        "explanation": "Both '-d' and '--working-directory' flags change the working directory before running just. This is useful for monorepos or running commands in subdirectories.",
+        "category": "Usage",
+        "difficulty": "medium",
+        "tags": ["directories", "flags", "usage"]
+      },
+      {
+        "id": "ji010",
+        "question": "What does '#!/usr/bin/env bash' as the first line of a recipe do?",
+        "choices": [
+          "Nothing, it's just a comment",
+          "Makes the entire recipe run as a single bash script",
+          "Changes the default shell permanently",
+          "Imports bash functions"
+        ],
+        "correctAnswer": 1,
+        "explanation": "A shebang (#!) as the first line of a recipe makes just run the entire recipe as a single script with that interpreter, rather than executing each line separately.",
+        "category": "Recipe Execution",
+        "difficulty": "medium",
+        "tags": ["shebang", "scripts", "execution"]
+      },
+      {
+        "id": "ji011",
+        "question": "How do you create an alias for a recipe?",
+        "choices": [
+          "alias newname := oldrecipe",
+          "newname = oldrecipe",
+          "recipe newname -> oldrecipe",
+          "@alias oldrecipe newname"
+        ],
+        "correctAnswer": 0,
+        "explanation": "The 'alias' keyword creates an alternative name for a recipe. This is useful for providing shortcuts or backwards compatibility when renaming recipes.",
+        "category": "Aliases",
+        "difficulty": "medium",
+        "tags": ["alias", "naming", "syntax"]
+      },
+      {
+        "id": "ji012",
+        "question": "What happens when you use '-' prefix before a command?",
+        "choices": [
+          "The command runs in background",
+          "Errors from that command are ignored",
+          "The command runs with lower priority",
+          "The command output is hidden"
+        ],
+        "correctAnswer": 1,
+        "explanation": "The '-' prefix makes just ignore the exit code of that command, continuing execution even if it fails. Useful for cleanup commands that might fail harmlessly.",
+        "category": "Error Handling",
+        "difficulty": "medium",
+        "tags": ["errors", "prefix", "execution"]
+      },
+      {
+        "id": "ji013",
+        "question": "How can you export a just variable as an environment variable to recipes?",
+        "choices": [
+          "export VAR_NAME := \"value\"",
+          "env VAR_NAME = \"value\"",
+          "VAR_NAME := export(\"value\")",
+          "set export VAR_NAME"
+        ],
+        "correctAnswer": 0,
+        "explanation": "The 'export' keyword before a variable declaration makes that variable available as an environment variable in all recipes.",
+        "category": "Variables",
+        "difficulty": "medium",
+        "tags": ["export", "environment", "variables"]
+      },
+      {
+        "id": "ji014",
+        "question": "What's the correct way to use conditional expressions in just?",
+        "choices": [
+          "if os() == \"windows\" then \"win\" else \"unix\"",
+          "os() == \"windows\" ? \"win\" : \"unix\"",
+          "if os() == \"windows\": \"win\" else: \"unix\"",
+          "if os() == \"windows\" { \"win\" } else { \"unix\" }"
+        ],
+        "correctAnswer": 0,
+        "explanation": "Just uses if-then-else syntax for conditional expressions. This is commonly used with functions like os(), arch(), or env_var() to create platform-specific behavior.",
+        "category": "Conditionals",
+        "difficulty": "hard",
+        "tags": ["conditionals", "expressions", "syntax"]
+      },
+      {
+        "id": "ji015",
+        "question": "How do you include another justfile?",
+        "choices": [
+          "include \"./other.just\"",
+          "import \"./other.just\"",
+          "source ./other.just",
+          "!include \"./other.just\""
+        ],
+        "correctAnswer": 1,
+        "explanation": "The 'import' statement includes recipes from another justfile. This allows you to modularize your commands across multiple files for better organization.",
+        "category": "Modules",
+        "difficulty": "medium",
+        "tags": ["import", "modules", "organization"]
+      },
+      {
+        "id": "ji016",
+        "question": "What does 'set positional-arguments' do?",
+        "choices": [
+          "Forces all arguments to be named",
+          "Passes arguments as $1, $2, etc. in shell recipes",
+          "Validates argument positions",
+          "Reorders arguments alphabetically"
+        ],
+        "correctAnswer": 1,
+        "explanation": "With 'set positional-arguments', recipe arguments are available as $1, $2, $@ etc. in recipe bodies, similar to shell scripts. This makes it easier to pass arguments to commands.",
+        "category": "Configuration",
+        "difficulty": "hard",
+        "tags": ["positional-arguments", "shell", "configuration"]
+      },
+      {
+        "id": "ji017",
+        "question": "How can you run a recipe from a parent directory's justfile?",
+        "choices": [
+          "just --search-parent recipe",
+          "just ..recipe",
+          "just -u recipe",
+          "just --parent recipe"
+        ],
+        "correctAnswer": 0,
+        "explanation": "The '--search-parent' flag makes just search for a justfile in parent directories. Useful when working in subdirectories of a project.",
+        "category": "Usage",
+        "difficulty": "medium",
+        "tags": ["search", "parent", "directories"]
+      },
+      {
+        "id": "ji018",
+        "question": "What's the purpose of {{ }} in recipe bodies?",
+        "choices": [
+          "String interpolation for just variables",
+          "Command substitution",
+          "Regular expression matching",
+          "Template expansion"
+        ],
+        "correctAnswer": 0,
+        "explanation": "Double curly braces {{ }} are used to interpolate just variables and expressions into recipe command lines. This is how you use just variables in your shell commands.",
+        "category": "Interpolation",
+        "difficulty": "medium",
+        "tags": ["interpolation", "variables", "syntax"]
+      }
+    ]
+  }

@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Game Knowledge Base",
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "version": { "type": "string" },
+        "targetAge": { "type": "string" },
+        "subject": { "type": "string" },
+        "mode": {
+          "type": "string",
+          "enum": ["easy", "hard"]
+        }
+      },
+      "required": ["title", "version", "targetAge", "subject", "mode"]
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "question": { "type": "string" },
+          "choices": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 2,
+            "maxItems": 6
+          },
+          "correctAnswer": { "type": "integer", "minimum": 0 },
+          "explanation": { "type": "string" },
+          "category": { "type": "string" },
+          "difficulty": { 
+            "type": "string", 
+            "enum": ["easy", "medium", "hard"] 
+          },
+          "tags": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "required": ["id", "question", "choices", "correctAnswer", "explanation", "category"]
+      }
+    }
+  },
+  "required": ["metadata", "questions"]
+}

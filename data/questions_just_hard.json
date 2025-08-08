@@ -1,0 +1,312 @@
+{
+    "metadata": {
+      "title": "Just Command Runner - Expert Murderous Quiz",
+      "description": "Tricky questions with plausible but wrong answers to test deep just knowledge",
+      "version": "1.0.0",
+      "targetAge": "Expert just users",
+      "subject": "Just Command Runner Advanced",
+      "mode": "hard"
+    },
+    "questions": [
+      {
+        "id": "jx001",
+        "question": "Which of these is the correct syntax for a recipe with both default and variadic parameters?",
+        "choices": [
+          "recipe arg1=\"default\" *rest:",
+          "recipe arg1=\"default\" +rest:",
+          "recipe *rest arg1=\"default\":",
+          "recipe +rest arg1=\"default\":"
+        ],
+        "correctAnswer": 0,
+        "explanation": "Variadic parameters must come last, but can follow optional parameters with defaults. The '*rest' accepts zero or more args, while '+rest' requires at least one.",
+        "category": "Advanced Syntax",
+        "difficulty": "hard",
+        "tags": ["parameters", "variadic", "defaults"]
+      },
+      {
+        "id": "jx002",
+        "question": "What happens when you set 'windows-shell' in a cross-platform justfile?",
+        "choices": [
+          "It overrides 'shell' setting on all platforms",
+          "It's ignored on non-Windows systems",
+          "It causes an error on Linux/Mac",
+          "It sets a fallback shell for all platforms"
+        ],
+        "correctAnswer": 1,
+        "explanation": "The 'windows-shell' setting only applies when running on Windows and is ignored on other platforms. This allows you to have platform-specific shell configurations in the same justfile.",
+        "category": "Cross-platform",
+        "difficulty": "hard",
+        "tags": ["windows", "shell", "cross-platform"]
+      },
+      {
+        "id": "jx003",
+        "question": "In which order are these configuration sources evaluated (first to last)?",
+        "choices": [
+          "justfile, .env file, environment variables, command-line",
+          "command-line, environment variables, .env file, justfile",
+          ".env file, environment variables, justfile, command-line",
+          "environment variables, .env file, justfile, command-line"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Command-line overrides take highest precedence, then environment variables, then .env file (if dotenv-load is set), then justfile defaults. Later sources override earlier ones.",
+        "category": "Configuration Order",
+        "difficulty": "hard",
+        "tags": ["configuration", "precedence", "environment"]
+      },
+      {
+        "id": "jx004",
+        "question": "What's the difference between backticks and $() in a justfile?",
+        "choices": [
+          "Backticks work in assignments, $() works in recipe bodies",
+          "Backticks are for just expressions, $() is passed to the shell",
+          "No difference, they're interchangeable",
+          "Backticks are deprecated, use $()"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Backticks (``) are evaluated by just during parsing for variable assignments and expressions. $() is shell command substitution that's passed through to the shell in recipe bodies.",
+        "category": "Command Substitution",
+        "difficulty": "hard",
+        "tags": ["backticks", "substitution", "shell"]
+      },
+      {
+        "id": "jx005",
+        "question": "Which statement about recipe dependencies is FALSE?",
+        "choices": [
+          "Dependencies run in the order listed",
+          "A recipe can depend on a parameterized recipe",
+          "Dependencies can be conditional using expressions",
+          "Circular dependencies are automatically resolved"
+        ],
+        "correctAnswer": 3,
+        "explanation": "Circular dependencies are NOT automatically resolved - they cause an error. Just detects dependency cycles and reports them rather than trying to resolve them.",
+        "category": "Dependencies",
+        "difficulty": "hard",
+        "tags": ["dependencies", "errors", "execution"]
+      },
+      {
+        "id": "jx006",
+        "question": "When using 'set shell', which is the correct format for PowerShell?",
+        "choices": [
+          "set shell := \"powershell\"",
+          "set shell := [\"powershell.exe\", \"-c\"]",
+          "set shell := [\"pwsh\", \"-c\"]",
+          "set shell := [\"powershell\", \"-Command\"]"
+        ],
+        "correctAnswer": 1,
+        "explanation": "For PowerShell on Windows, use [\"powershell.exe\", \"-c\"]. For PowerShell Core (cross-platform), use [\"pwsh\", \"-c\"]. The array must include the command flag.",
+        "category": "Shell Configuration",
+        "difficulty": "hard",
+        "tags": ["powershell", "shell", "configuration"]
+      },
+      {
+        "id": "jx007",
+        "question": "What does 'set export' without a variable name do?",
+        "choices": [
+          "Exports all just variables to recipes",
+          "Syntax error - export needs a variable",
+          "Exports only undefined variables",
+          "Exports the current environment"
+        ],
+        "correctAnswer": 0,
+        "explanation": "'set export' (without a variable name) exports ALL just variables as environment variables to recipes, not just those marked with 'export'.",
+        "category": "Environment Export",
+        "difficulty": "hard",
+        "tags": ["export", "environment", "settings"]
+      },
+      {
+        "id": "jx008",
+        "question": "How does just handle Unicode in recipe names?",
+        "choices": [
+          "Only ASCII characters are allowed",
+          "Unicode is fully supported in recipe names",
+          "Unicode works but breaks --list formatting",
+          "Unicode only works with UTF-8 terminals"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Just fully supports Unicode in recipe names, parameters, and strings. You can have recipes named with emoji or non-ASCII characters: 🚀: echo \"Launch!\"",
+        "category": "Unicode Support",
+        "difficulty": "hard",
+        "tags": ["unicode", "internationalization", "names"]
+      },
+      {
+        "id": "jx009",
+        "question": "What's the interaction between 'set positional-arguments' and default parameters?",
+        "choices": [
+          "They're incompatible - causes an error",
+          "Defaults are ignored with positional-arguments",
+          "Defaults work normally, missing positionals become empty strings",
+          "Positional arguments override defaults"
+        ],
+        "correctAnswer": 2,
+        "explanation": "With positional-arguments, default parameters still work for providing defaults, but in the recipe body, missing positionals become empty strings, not the default values.",
+        "category": "Advanced Parameters",
+        "difficulty": "hard",
+        "tags": ["positional-arguments", "defaults", "parameters"]
+      },
+      {
+        "id": "jx010",
+        "question": "Which just function returns an empty string if the variable doesn't exist?",
+        "choices": [
+          "env_var('VAR')",
+          "env_var_or_default('VAR', '')",
+          "env('VAR')",
+          "There's no such function"
+        ],
+        "correctAnswer": 1,
+        "explanation": "env_var_or_default('VAR', 'default') returns the default value if VAR doesn't exist, while env_var('VAR') causes an error if the variable is not set.",
+        "category": "Functions",
+        "difficulty": "hard",
+        "tags": ["functions", "environment", "defaults"]
+      },
+      {
+        "id": "jx011",
+        "question": "What happens with 'mod foo' when foo.just doesn't exist but foo/mod.just does?",
+        "choices": [
+          "Error: foo.just not found",
+          "Automatically uses foo/mod.just",
+          "Searches for foo/justfile",
+          "Creates an empty module"
+        ],
+        "correctAnswer": 1,
+        "explanation": "The 'mod' statement looks for either 'foo.just' or 'foo/mod.just' (also foo/justfile, foo/.justfile). This allows organizing modules in directories.",
+        "category": "Modules",
+        "difficulty": "hard",
+        "tags": ["modules", "organization", "imports"]
+      },
+      {
+        "id": "jx012",
+        "question": "In recipe bodies, what's the difference between $VAR and ${VAR}?",
+        "choices": [
+          "No difference in just, both work identically",
+          "$VAR is for environment, ${VAR} is for just variables",
+          "${VAR} is required when followed by alphanumerics",
+          "$VAR is deprecated syntax"
+        ],
+        "correctAnswer": 2,
+        "explanation": "Both refer to environment variables, but ${VAR} is needed when the variable name would be ambiguous, like ${VAR}foo vs $VARfoo which would look for variable 'VARfoo'.",
+        "category": "Variable Syntax",
+        "difficulty": "hard",
+        "tags": ["variables", "syntax", "interpolation"]
+      },
+      {
+        "id": "jx013",
+        "question": "How does 'set fallback' change just's behavior?",
+        "choices": [
+          "Falls back to parent directory's justfile",
+          "Falls back to default shell if set shell fails",
+          "Falls back to .justfile if justfile doesn't exist",
+          "Falls back to first recipe if requested recipe doesn't exist"
+        ],
+        "correctAnswer": 0,
+        "explanation": "'set fallback' (deprecated for --fallback flag) makes just search parent directories for a justfile if the current directory doesn't have one.",
+        "category": "Settings",
+        "difficulty": "hard",
+        "tags": ["fallback", "settings", "search"]
+      },
+      {
+        "id": "jx014",
+        "question": "What does the 'invocation_directory()' function return?",
+        "choices": [
+          "The directory containing the justfile",
+          "The directory where 'just' command was run",
+          "The user's home directory",
+          "The current working directory during execution"
+        ],
+        "correctAnswer": 1,
+        "explanation": "invocation_directory() returns where you ran the 'just' command from, while justfile_directory() returns where the justfile is located. These can differ when using -f or --working-directory.",
+        "category": "Functions",
+        "difficulty": "hard",
+        "tags": ["functions", "directories", "paths"]
+      },
+      {
+        "id": "jx015",
+        "question": "Which is true about string escaping in just?",
+        "choices": [
+          "Use \\n for newline in both 'single' and \"double\" quotes",
+          "Escape sequences only work in \"double\" quotes",
+          "Triple quotes '''...''' prevent all escaping",
+          "Backticks require different escaping rules"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Escape sequences like \\n, \\t only work in double-quoted strings. Single quotes preserve literal characters. Triple quotes are not supported in just.",
+        "category": "String Handling",
+        "difficulty": "hard",
+        "tags": ["strings", "escaping", "quotes"]
+      },
+      {
+        "id": "jx016",
+        "question": "What's the effect of '[private]' attribute on a recipe?",
+        "choices": [
+          "Same as starting the name with underscore",
+          "Hides it from --list but shows with --list --private",
+          "Makes it only callable from other recipes",
+          "Requires confirmation before running"
+        ],
+        "correctAnswer": 0,
+        "explanation": "The '[private]' attribute has the same effect as prefixing the recipe name with underscore - it hides the recipe from --list output but it can still be run directly.",
+        "category": "Attributes",
+        "difficulty": "hard",
+        "tags": ["attributes", "private", "visibility"]
+      },
+      {
+        "id": "jx017",
+        "question": "How are recipe arguments handled when using shebang recipes?",
+        "choices": [
+          "Passed as command-line arguments to the script",
+          "Set as environment variables",
+          "Interpolated into the script before execution",
+          "Not available in shebang recipes"
+        ],
+        "correctAnswer": 0,
+        "explanation": "In shebang recipes, arguments are passed as command-line arguments to the script interpreter, accessible as $1, $2, etc. in shell scripts or sys.argv in Python.",
+        "category": "Shebang Recipes",
+        "difficulty": "hard",
+        "tags": ["shebang", "arguments", "scripts"]
+      },
+      {
+        "id": "jx018",
+        "question": "What does 'set tempdir' affect?",
+        "choices": [
+          "Where just creates temporary files for shebang recipes",
+          "The TMPDIR environment variable in recipes",
+          "Where .env files are searched",
+          "The working directory for recipes"
+        ],
+        "correctAnswer": 0,
+        "explanation": "'set tempdir' changes where just writes temporary script files when executing shebang recipes. It doesn't affect the TMPDIR environment variable or recipe execution.",
+        "category": "Settings",
+        "difficulty": "hard",
+        "tags": ["tempdir", "settings", "shebang"]
+      },
+      {
+        "id": "jx019",
+        "question": "Which statement about 'import' vs 'mod' is correct?",
+        "choices": [
+          "import brings recipes into current namespace, mod creates a namespace",
+          "They're aliases for the same functionality",
+          "mod is deprecated in favor of import",
+          "import is for .just files, mod is for directories"
+        ],
+        "correctAnswer": 0,
+        "explanation": "'import' brings recipes directly into the current namespace (can cause conflicts), while 'mod' creates a module namespace requiring 'module::recipe' to call recipes.",
+        "category": "Modules",
+        "difficulty": "hard",
+        "tags": ["import", "mod", "namespaces"]
+      },
+      {
+        "id": "jx020",
+        "question": "What happens if a recipe has both '@' prefix and '-' prefix on the same line?",
+        "choices": [
+          "Syntax error - can't combine prefixes",
+          "Both effects apply: suppress echo and ignore errors",
+          "Only the first prefix takes effect",
+          "Order matters: @- vs -@ have different effects"
+        ],
+        "correctAnswer": 1,
+        "explanation": "You can combine prefixes like '@-' or '-@' (order doesn't matter). The command won't be echoed (@) and errors will be ignored (-). This is useful for optional cleanup commands.",
+        "category": "Recipe Modifiers",
+        "difficulty": "hard",
+        "tags": ["prefixes", "modifiers", "combinations"]
+      }
+    ]
+  }

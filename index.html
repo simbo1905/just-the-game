@@ -1,0 +1,2643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Just The Game</title>
+    
+    <!-- Embedded Question Sets -->
+    <script>
+        window.EMBEDDED_QUESTION_SETS = {
+  "questions_just_hard": {
+    "metadata": {
+      "title": "Just Command Runner - Expert Murderous Quiz",
+      "description": "Tricky questions with plausible but wrong answers to test deep just knowledge",
+      "version": "1.0.0",
+      "targetAge": "Expert just users",
+      "subject": "Just Command Runner Advanced",
+      "mode": "hard"
+    },
+    "questions": [
+      {
+        "id": "jx001",
+        "question": "Which of these is the correct syntax for a recipe with both default and variadic parameters?",
+        "choices": [
+          "recipe arg1=\"default\" *rest:",
+          "recipe arg1=\"default\" +rest:",
+          "recipe *rest arg1=\"default\":",
+          "recipe +rest arg1=\"default\":"
+        ],
+        "correctAnswer": 0,
+        "explanation": "Variadic parameters must come last, but can follow optional parameters with defaults. The '*rest' accepts zero or more args, while '+rest' requires at least one.",
+        "category": "Advanced Syntax",
+        "difficulty": "hard",
+        "tags": [
+          "parameters",
+          "variadic",
+          "defaults"
+        ]
+      },
+      {
+        "id": "jx002",
+        "question": "What happens when you set 'windows-shell' in a cross-platform justfile?",
+        "choices": [
+          "It overrides 'shell' setting on all platforms",
+          "It's ignored on non-Windows systems",
+          "It causes an error on Linux/Mac",
+          "It sets a fallback shell for all platforms"
+        ],
+        "correctAnswer": 1,
+        "explanation": "The 'windows-shell' setting only applies when running on Windows and is ignored on other platforms. This allows you to have platform-specific shell configurations in the same justfile.",
+        "category": "Cross-platform",
+        "difficulty": "hard",
+        "tags": [
+          "windows",
+          "shell",
+          "cross-platform"
+        ]
+      },
+      {
+        "id": "jx003",
+        "question": "In which order are these configuration sources evaluated (first to last)?",
+        "choices": [
+          "justfile, .env file, environment variables, command-line",
+          "command-line, environment variables, .env file, justfile",
+          ".env file, environment variables, justfile, command-line",
+          "environment variables, .env file, justfile, command-line"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Command-line overrides take highest precedence, then environment variables, then .env file (if dotenv-load is set), then justfile defaults. Later sources override earlier ones.",
+        "category": "Configuration Order",
+        "difficulty": "hard",
+        "tags": [
+          "configuration",
+          "precedence",
+          "environment"
+        ]
+      },
+      {
+        "id": "jx004",
+        "question": "What's the difference between backticks and $() in a justfile?",
+        "choices": [
+          "Backticks work in assignments, $() works in recipe bodies",
+          "Backticks are for just expressions, $() is passed to the shell",
+          "No difference, they're interchangeable",
+          "Backticks are deprecated, use $()"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Backticks (``) are evaluated by just during parsing for variable assignments and expressions. $() is shell command substitution that's passed through to the shell in recipe bodies.",
+        "category": "Command Substitution",
+        "difficulty": "hard",
+        "tags": [
+          "backticks",
+          "substitution",
+          "shell"
+        ]
+      },
+      {
+        "id": "jx005",
+        "question": "Which statement about recipe dependencies is FALSE?",
+        "choices": [
+          "Dependencies run in the order listed",
+          "A recipe can depend on a parameterized recipe",
+          "Dependencies can be conditional using expressions",
+          "Circular dependencies are automatically resolved"
+        ],
+        "correctAnswer": 3,
+        "explanation": "Circular dependencies are NOT automatically resolved - they cause an error. Just detects dependency cycles and reports them rather than trying to resolve them.",
+        "category": "Dependencies",
+        "difficulty": "hard",
+        "tags": [
+          "dependencies",
+          "errors",
+          "execution"
+        ]
+      },
+      {
+        "id": "jx006",
+        "question": "When using 'set shell', which is the correct format for PowerShell?",
+        "choices": [
+          "set shell := \"powershell\"",
+          "set shell := [\"powershell.exe\", \"-c\"]",
+          "set shell := [\"pwsh\", \"-c\"]",
+          "set shell := [\"powershell\", \"-Command\"]"
+        ],
+        "correctAnswer": 1,
+        "explanation": "For PowerShell on Windows, use [\"powershell.exe\", \"-c\"]. For PowerShell Core (cross-platform), use [\"pwsh\", \"-c\"]. The array must include the command flag.",
+        "category": "Shell Configuration",
+        "difficulty": "hard",
+        "tags": [
+          "powershell",
+          "shell",
+          "configuration"
+        ]
+      },
+      {
+        "id": "jx007",
+        "question": "What does 'set export' without a variable name do?",
+        "choices": [
+          "Exports all just variables to recipes",
+          "Syntax error - export needs a variable",
+          "Exports only undefined variables",
+          "Exports the current environment"
+        ],
+        "correctAnswer": 0,
+        "explanation": "'set export' (without a variable name) exports ALL just variables as environment variables to recipes, not just those marked with 'export'.",
+        "category": "Environment Export",
+        "difficulty": "hard",
+        "tags": [
+          "export",
+          "environment",
+          "settings"
+        ]
+      },
+      {
+        "id": "jx008",
+        "question": "How does just handle Unicode in recipe names?",
+        "choices": [
+          "Only ASCII characters are allowed",
+          "Unicode is fully supported in recipe names",
+          "Unicode works but breaks --list formatting",
+          "Unicode only works with UTF-8 terminals"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Just fully supports Unicode in recipe names, parameters, and strings. You can have recipes named with emoji or non-ASCII characters: \ud83d\ude80: echo \"Launch!\"",
+        "category": "Unicode Support",
+        "difficulty": "hard",
+        "tags": [
+          "unicode",
+          "internationalization",
+          "names"
+        ]
+      },
+      {
+        "id": "jx009",
+        "question": "What's the interaction between 'set positional-arguments' and default parameters?",
+        "choices": [
+          "They're incompatible - causes an error",
+          "Defaults are ignored with positional-arguments",
+          "Defaults work normally, missing positionals become empty strings",
+          "Positional arguments override defaults"
+        ],
+        "correctAnswer": 2,
+        "explanation": "With positional-arguments, default parameters still work for providing defaults, but in the recipe body, missing positionals become empty strings, not the default values.",
+        "category": "Advanced Parameters",
+        "difficulty": "hard",
+        "tags": [
+          "positional-arguments",
+          "defaults",
+          "parameters"
+        ]
+      },
+      {
+        "id": "jx010",
+        "question": "Which just function returns an empty string if the variable doesn't exist?",
+        "choices": [
+          "env_var('VAR')",
+          "env_var_or_default('VAR', '')",
+          "env('VAR')",
+          "There's no such function"
+        ],
+        "correctAnswer": 1,
+        "explanation": "env_var_or_default('VAR', 'default') returns the default value if VAR doesn't exist, while env_var('VAR') causes an error if the variable is not set.",
+        "category": "Functions",
+        "difficulty": "hard",
+        "tags": [
+          "functions",
+          "environment",
+          "defaults"
+        ]
+      },
+      {
+        "id": "jx011",
+        "question": "What happens with 'mod foo' when foo.just doesn't exist but foo/mod.just does?",
+        "choices": [
+          "Error: foo.just not found",
+          "Automatically uses foo/mod.just",
+          "Searches for foo/justfile",
+          "Creates an empty module"
+        ],
+        "correctAnswer": 1,
+        "explanation": "The 'mod' statement looks for either 'foo.just' or 'foo/mod.just' (also foo/justfile, foo/.justfile). This allows organizing modules in directories.",
+        "category": "Modules",
+        "difficulty": "hard",
+        "tags": [
+          "modules",
+          "organization",
+          "imports"
+        ]
+      },
+      {
+        "id": "jx012",
+        "question": "In recipe bodies, what's the difference between $VAR and ${VAR}?",
+        "choices": [
+          "No difference in just, both work identically",
+          "$VAR is for environment, ${VAR} is for just variables",
+          "${VAR} is required when followed by alphanumerics",
+          "$VAR is deprecated syntax"
+        ],
+        "correctAnswer": 2,
+        "explanation": "Both refer to environment variables, but ${VAR} is needed when the variable name would be ambiguous, like ${VAR}foo vs $VARfoo which would look for variable 'VARfoo'.",
+        "category": "Variable Syntax",
+        "difficulty": "hard",
+        "tags": [
+          "variables",
+          "syntax",
+          "interpolation"
+        ]
+      },
+      {
+        "id": "jx013",
+        "question": "How does 'set fallback' change just's behavior?",
+        "choices": [
+          "Falls back to parent directory's justfile",
+          "Falls back to default shell if set shell fails",
+          "Falls back to .justfile if justfile doesn't exist",
+          "Falls back to first recipe if requested recipe doesn't exist"
+        ],
+        "correctAnswer": 0,
+        "explanation": "'set fallback' (deprecated for --fallback flag) makes just search parent directories for a justfile if the current directory doesn't have one.",
+        "category": "Settings",
+        "difficulty": "hard",
+        "tags": [
+          "fallback",
+          "settings",
+          "search"
+        ]
+      },
+      {
+        "id": "jx014",
+        "question": "What does the 'invocation_directory()' function return?",
+        "choices": [
+          "The directory containing the justfile",
+          "The directory where 'just' command was run",
+          "The user's home directory",
+          "The current working directory during execution"
+        ],
+        "correctAnswer": 1,
+        "explanation": "invocation_directory() returns where you ran the 'just' command from, while justfile_directory() returns where the justfile is located. These can differ when using -f or --working-directory.",
+        "category": "Functions",
+        "difficulty": "hard",
+        "tags": [
+          "functions",
+          "directories",
+          "paths"
+        ]
+      },
+      {
+        "id": "jx015",
+        "question": "Which is true about string escaping in just?",
+        "choices": [
+          "Use \\n for newline in both 'single' and \"double\" quotes",
+          "Escape sequences only work in \"double\" quotes",
+          "Triple quotes '''...''' prevent all escaping",
+          "Backticks require different escaping rules"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Escape sequences like \\n, \\t only work in double-quoted strings. Single quotes preserve literal characters. Triple quotes are not supported in just.",
+        "category": "String Handling",
+        "difficulty": "hard",
+        "tags": [
+          "strings",
+          "escaping",
+          "quotes"
+        ]
+      },
+      {
+        "id": "jx016",
+        "question": "What's the effect of '[private]' attribute on a recipe?",
+        "choices": [
+          "Same as starting the name with underscore",
+          "Hides it from --list but shows with --list --private",
+          "Makes it only callable from other recipes",
+          "Requires confirmation before running"
+        ],
+        "correctAnswer": 0,
+        "explanation": "The '[private]' attribute has the same effect as prefixing the recipe name with underscore - it hides the recipe from --list output but it can still be run directly.",
+        "category": "Attributes",
+        "difficulty": "hard",
+        "tags": [
+          "attributes",
+          "private",
+          "visibility"
+        ]
+      },
+      {
+        "id": "jx017",
+        "question": "How are recipe arguments handled when using shebang recipes?",
+        "choices": [
+          "Passed as command-line arguments to the script",
+          "Set as environment variables",
+          "Interpolated into the script before execution",
+          "Not available in shebang recipes"
+        ],
+        "correctAnswer": 0,
+        "explanation": "In shebang recipes, arguments are passed as command-line arguments to the script interpreter, accessible as $1, $2, etc. in shell scripts or sys.argv in Python.",
+        "category": "Shebang Recipes",
+        "difficulty": "hard",
+        "tags": [
+          "shebang",
+          "arguments",
+          "scripts"
+        ]
+      },
+      {
+        "id": "jx018",
+        "question": "What does 'set tempdir' affect?",
+        "choices": [
+          "Where just creates temporary files for shebang recipes",
+          "The TMPDIR environment variable in recipes",
+          "Where .env files are searched",
+          "The working directory for recipes"
+        ],
+        "correctAnswer": 0,
+        "explanation": "'set tempdir' changes where just writes temporary script files when executing shebang recipes. It doesn't affect the TMPDIR environment variable or recipe execution.",
+        "category": "Settings",
+        "difficulty": "hard",
+        "tags": [
+          "tempdir",
+          "settings",
+          "shebang"
+        ]
+      },
+      {
+        "id": "jx019",
+        "question": "Which statement about 'import' vs 'mod' is correct?",
+        "choices": [
+          "import brings recipes into current namespace, mod creates a namespace",
+          "They're aliases for the same functionality",
+          "mod is deprecated in favor of import",
+          "import is for .just files, mod is for directories"
+        ],
+        "correctAnswer": 0,
+        "explanation": "'import' brings recipes directly into the current namespace (can cause conflicts), while 'mod' creates a module namespace requiring 'module::recipe' to call recipes.",
+        "category": "Modules",
+        "difficulty": "hard",
+        "tags": [
+          "import",
+          "mod",
+          "namespaces"
+        ]
+      },
+      {
+        "id": "jx020",
+        "question": "What happens if a recipe has both '@' prefix and '-' prefix on the same line?",
+        "choices": [
+          "Syntax error - can't combine prefixes",
+          "Both effects apply: suppress echo and ignore errors",
+          "Only the first prefix takes effect",
+          "Order matters: @- vs -@ have different effects"
+        ],
+        "correctAnswer": 1,
+        "explanation": "You can combine prefixes like '@-' or '-@' (order doesn't matter). The command won't be echoed (@) and errors will be ignored (-). This is useful for optional cleanup commands.",
+        "category": "Recipe Modifiers",
+        "difficulty": "hard",
+        "tags": [
+          "prefixes",
+          "modifiers",
+          "combinations"
+        ]
+      }
+    ]
+  },
+  "questions_just_easy": {
+    "metadata": {
+      "title": "Just Command Runner - Getting Started",
+      "description": "Introduction to just for developers new to task runners and build tools",
+      "version": "1.0.0",
+      "targetAge": "All developers",
+      "subject": "Just Command Runner Basics",
+      "mode": "easy"
+    },
+    "questions": [
+      {
+        "id": "je001",
+        "question": "What is 'just' primarily used for?",
+        "choices": [
+          "Writing web applications",
+          "Running project-specific commands and tasks",
+          "Compiling Rust code only",
+          "Managing git repositories"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Just is a command runner that helps you save and run project-specific commands. It's like having a menu of useful commands for your project that anyone can easily discover and use.",
+        "category": "Basic Concepts",
+        "difficulty": "easy",
+        "tags": [
+          "basics",
+          "introduction",
+          "command-runner"
+        ]
+      },
+      {
+        "id": "je002",
+        "question": "What file does just look for to find your commands?",
+        "choices": [
+          "Makefile",
+          "package.json",
+          "justfile",
+          "build.sh"
+        ],
+        "correctAnswer": 2,
+        "explanation": "Just looks for a file called 'justfile' (or 'Justfile', '.justfile') in your project directory. This is where you define all your recipes (commands).",
+        "category": "Basic Concepts",
+        "difficulty": "easy",
+        "tags": [
+          "justfile",
+          "configuration",
+          "basics"
+        ]
+      },
+      {
+        "id": "je003",
+        "question": "What do we call the commands you define in a justfile?",
+        "choices": [
+          "Scripts",
+          "Recipes",
+          "Tasks",
+          "Functions"
+        ],
+        "correctAnswer": 1,
+        "explanation": "In just terminology, the commands you define are called 'recipes'. Each recipe is a set of commands that can be run with 'just recipe-name'.",
+        "category": "Basic Concepts",
+        "difficulty": "easy",
+        "tags": [
+          "recipes",
+          "terminology",
+          "basics"
+        ]
+      },
+      {
+        "id": "je004",
+        "question": "How do you run the default recipe in a justfile?",
+        "choices": [
+          "just default",
+          "just run",
+          "just start",
+          "just (with no arguments)"
+        ],
+        "correctAnswer": 3,
+        "explanation": "Running 'just' without any arguments executes the first recipe in your justfile, or a recipe explicitly marked as default with '@default:'.",
+        "category": "Usage",
+        "difficulty": "easy",
+        "tags": [
+          "usage",
+          "default",
+          "commands"
+        ]
+      },
+      {
+        "id": "je005",
+        "question": "Which of these is a benefit of using just over npm scripts?",
+        "choices": [
+          "It only works with JavaScript projects",
+          "It can work with any programming language or project type",
+          "It requires Node.js to be installed",
+          "It stores commands in package.json"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Unlike npm scripts which require Node.js and package.json, just is language-agnostic and works with any project type - Python, Rust, Go, or even non-code projects.",
+        "category": "Advantages",
+        "difficulty": "easy",
+        "tags": [
+          "comparison",
+          "npm",
+          "advantages"
+        ]
+      },
+      {
+        "id": "je006",
+        "question": "How do you list all available recipes in a justfile?",
+        "choices": [
+          "just help",
+          "just --list",
+          "just show",
+          "just recipes"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Running 'just --list' (or 'just -l') shows all available recipes in your justfile with their descriptions, making it easy for team members to discover available commands.",
+        "category": "Usage",
+        "difficulty": "easy",
+        "tags": [
+          "list",
+          "discovery",
+          "commands"
+        ]
+      },
+      {
+        "id": "je007",
+        "question": "What symbol is used to add a description to a recipe?",
+        "choices": [
+          "// for comments",
+          "# for comments above the recipe",
+          "-- for inline comments",
+          "/* */ for block comments"
+        ],
+        "correctAnswer": 1,
+        "explanation": "You add descriptions to recipes using # comments on the line immediately before the recipe. These descriptions appear when you run 'just --list'.",
+        "category": "Syntax",
+        "difficulty": "easy",
+        "tags": [
+          "comments",
+          "documentation",
+          "syntax"
+        ]
+      },
+      {
+        "id": "je008",
+        "question": "What's a key advantage of just over bash scripts?",
+        "choices": [
+          "Just is slower but more reliable",
+          "Just provides better error handling and parameter passing",
+          "Just only works on Linux",
+          "Just requires more code to do the same thing"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Just provides built-in parameter handling, better error messages, automatic help text, and cross-platform compatibility that would require significant boilerplate in bash scripts.",
+        "category": "Advantages",
+        "difficulty": "easy",
+        "tags": [
+          "comparison",
+          "bash",
+          "advantages"
+        ]
+      },
+      {
+        "id": "je009",
+        "question": "Can recipes in just call other recipes?",
+        "choices": [
+          "No, each recipe is completely independent",
+          "Yes, recipes can depend on and call other recipes",
+          "Only if they're in the same file",
+          "Only with special plugins"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Recipes can depend on other recipes using the syntax 'recipe-name: dependency-recipe'. This helps you compose complex workflows from simpler building blocks.",
+        "category": "Features",
+        "difficulty": "easy",
+        "tags": [
+          "dependencies",
+          "recipes",
+          "composition"
+        ]
+      },
+      {
+        "id": "je010",
+        "question": "What happens if a recipe command fails?",
+        "choices": [
+          "Just continues to the next command",
+          "Just stops execution and reports the error",
+          "Just silently ignores it",
+          "Just retries automatically"
+        ],
+        "correctAnswer": 1,
+        "explanation": "By default, just stops execution when a command fails (returns non-zero exit code) and reports the error. This helps catch problems early rather than continuing with a broken state.",
+        "category": "Behavior",
+        "difficulty": "easy",
+        "tags": [
+          "errors",
+          "execution",
+          "behavior"
+        ]
+      },
+      {
+        "id": "je011",
+        "question": "How do you pass arguments to a recipe?",
+        "choices": [
+          "just recipe --arg value",
+          "just recipe(value)",
+          "just recipe value",
+          "just -p value recipe"
+        ],
+        "correctAnswer": 2,
+        "explanation": "You pass arguments to recipes simply by adding them after the recipe name: 'just recipe-name arg1 arg2'. The recipe defines parameters to receive these values.",
+        "category": "Usage",
+        "difficulty": "easy",
+        "tags": [
+          "arguments",
+          "parameters",
+          "usage"
+        ]
+      },
+      {
+        "id": "je012",
+        "question": "Which operating systems can run just?",
+        "choices": [
+          "Only Linux",
+          "Only Unix-like systems (Linux/Mac)",
+          "Linux, macOS, and Windows",
+          "Only systems with bash installed"
+        ],
+        "correctAnswer": 2,
+        "explanation": "Just is cross-platform and runs on Linux, macOS, and Windows. It handles platform differences automatically, making your commands portable across different systems.",
+        "category": "Compatibility",
+        "difficulty": "easy",
+        "tags": [
+          "cross-platform",
+          "compatibility",
+          "operating-systems"
+        ]
+      },
+      {
+        "id": "je013",
+        "question": "What's the main philosophy behind just compared to Make?",
+        "choices": [
+          "Just is for building C/C++ projects",
+          "Just is a command runner, not a build system",
+          "Just replaces all build tools",
+          "Just only works with compiled languages"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Unlike Make which is designed as a build system with dependency tracking, just focuses on being a command runner - a way to save and run project commands without the complexity of build rules.",
+        "category": "Philosophy",
+        "difficulty": "easy",
+        "tags": [
+          "philosophy",
+          "make",
+          "comparison"
+        ]
+      },
+      {
+        "id": "je014",
+        "question": "How does just help with onboarding new team members?",
+        "choices": [
+          "It automatically writes documentation",
+          "It provides a discoverable list of project commands",
+          "It teaches them programming",
+          "It configures their development environment"
+        ],
+        "correctAnswer": 1,
+        "explanation": "New team members can run 'just --list' to see all available project commands with descriptions, making it easy to discover how to run tests, build, deploy, etc. without searching through documentation.",
+        "category": "Team Benefits",
+        "difficulty": "easy",
+        "tags": [
+          "onboarding",
+          "team",
+          "documentation"
+        ]
+      },
+      {
+        "id": "je015",
+        "question": "What language is just itself written in?",
+        "choices": [
+          "JavaScript",
+          "Python",
+          "Rust",
+          "Go"
+        ],
+        "correctAnswer": 2,
+        "explanation": "Just is written in Rust, which makes it fast, reliable, and produces a single binary that's easy to install without dependencies.",
+        "category": "Technical Details",
+        "difficulty": "easy",
+        "tags": [
+          "rust",
+          "implementation",
+          "technical"
+        ]
+      }
+    ]
+  },
+  "questions_just_medium": {
+    "metadata": {
+      "title": "Just Command Runner - Journeyman Level",
+      "description": "Intermediate concepts and practical knowledge for effective just usage",
+      "version": "1.0.0",
+      "targetAge": "Developers with basic just knowledge",
+      "subject": "Just Command Runner Intermediate",
+      "mode": "hard"
+    },
+    "questions": [
+      {
+        "id": "ji001",
+        "question": "How do you make a recipe parameter optional with a default value?",
+        "choices": [
+          "param?: \"default\"",
+          "param = \"default\"",
+          "param || \"default\"",
+          "param=\"default\""
+        ],
+        "correctAnswer": 3,
+        "explanation": "Optional parameters with defaults are defined using param=\"default\" syntax. This allows the recipe to be called with or without that argument.",
+        "category": "Parameters",
+        "difficulty": "medium",
+        "tags": [
+          "parameters",
+          "defaults",
+          "syntax"
+        ]
+      },
+      {
+        "id": "ji002",
+        "question": "What does the '@' prefix do before a command in a recipe?",
+        "choices": [
+          "Makes the command run in parallel",
+          "Suppresses echoing the command to stdout",
+          "Runs the command as root",
+          "Makes the command optional"
+        ],
+        "correctAnswer": 1,
+        "explanation": "The '@' prefix suppresses echoing the command itself to stdout, showing only the command's output. Useful for cleaner output when the command itself isn't important to see.",
+        "category": "Recipe Modifiers",
+        "difficulty": "medium",
+        "tags": [
+          "modifiers",
+          "output",
+          "syntax"
+        ]
+      },
+      {
+        "id": "ji003",
+        "question": "How do you use environment variables in a justfile?",
+        "choices": [
+          "${VAR_NAME}",
+          "$VAR_NAME",
+          "{{VAR_NAME}}",
+          "env_var('VAR_NAME')"
+        ],
+        "correctAnswer": 3,
+        "explanation": "The env_var() function is used to access environment variables in expressions. In recipe bodies, you can use $VAR_NAME, but in just expressions use env_var('VAR_NAME').",
+        "category": "Environment Variables",
+        "difficulty": "medium",
+        "tags": [
+          "environment",
+          "variables",
+          "functions"
+        ]
+      },
+      {
+        "id": "ji004",
+        "question": "What's the difference between '=' and ':=' when setting variables?",
+        "choices": [
+          "No difference, they're aliases",
+          "'=' is lazy evaluation, ':=' is immediate evaluation",
+          "'=' is for strings, ':=' is for commands",
+          "'=' is public, ':=' is private"
+        ],
+        "correctAnswer": 1,
+        "explanation": "'=' creates lazily-evaluated variables (evaluated when used), while ':=' creates immediately-evaluated variables (evaluated when parsed). This matters when using functions or shell commands.",
+        "category": "Variables",
+        "difficulty": "hard",
+        "tags": [
+          "variables",
+          "evaluation",
+          "assignment"
+        ]
+      },
+      {
+        "id": "ji005",
+        "question": "How do you make a recipe private (hidden from --list)?",
+        "choices": [
+          "Start the recipe name with underscore (_)",
+          "Add 'private' keyword before the recipe",
+          "Put it in a separate file",
+          "Use the @private decorator"
+        ],
+        "correctAnswer": 0,
+        "explanation": "Recipes whose names start with an underscore are private and won't show up in 'just --list' output, though they can still be run directly if you know the name.",
+        "category": "Recipe Visibility",
+        "difficulty": "medium",
+        "tags": [
+          "private",
+          "visibility",
+          "conventions"
+        ]
+      },
+      {
+        "id": "ji006",
+        "question": "What does the '+' prefix do for a variadic parameter?",
+        "choices": [
+          "Makes it numeric only",
+          "Requires at least one argument",
+          "Allows zero or more arguments",
+          "Concatenates arguments"
+        ],
+        "correctAnswer": 1,
+        "explanation": "The '+' prefix on a variadic parameter (like +args) means it requires at least one argument, while '*args' would accept zero or more arguments.",
+        "category": "Parameters",
+        "difficulty": "hard",
+        "tags": [
+          "variadic",
+          "parameters",
+          "syntax"
+        ]
+      },
+      {
+        "id": "ji007",
+        "question": "How can you change the shell used to execute recipe commands?",
+        "choices": [
+          "set shell := [\"powershell\", \"-c\"]",
+          "shell = \"bash\"",
+          "use powershell",
+          "#!shell:bash"
+        ],
+        "correctAnswer": 0,
+        "explanation": "The 'set shell' setting allows you to change the shell interpreter used for recipe commands. You provide the command and its arguments as an array.",
+        "category": "Configuration",
+        "difficulty": "medium",
+        "tags": [
+          "shell",
+          "configuration",
+          "settings"
+        ]
+      },
+      {
+        "id": "ji008",
+        "question": "What's the purpose of the 'dotenv-load' setting?",
+        "choices": [
+          "Loads environment variables from .env files",
+          "Creates a .env file template",
+          "Validates environment variables",
+          "Exports variables to .env"
+        ],
+        "correctAnswer": 0,
+        "explanation": "When 'set dotenv-load' is enabled (default), just automatically loads environment variables from .env files in the project directory.",
+        "category": "Configuration",
+        "difficulty": "medium",
+        "tags": [
+          "dotenv",
+          "environment",
+          "configuration"
+        ]
+      },
+      {
+        "id": "ji009",
+        "question": "How do you run a recipe in a different directory?",
+        "choices": [
+          "just -d /path/to/dir recipe",
+          "just --working-directory /path/to/dir recipe",
+          "Both A and B are correct",
+          "cd /path/to/dir && just recipe"
+        ],
+        "correctAnswer": 2,
+        "explanation": "Both '-d' and '--working-directory' flags change the working directory before running just. This is useful for monorepos or running commands in subdirectories.",
+        "category": "Usage",
+        "difficulty": "medium",
+        "tags": [
+          "directories",
+          "flags",
+          "usage"
+        ]
+      },
+      {
+        "id": "ji010",
+        "question": "What does '#!/usr/bin/env bash' as the first line of a recipe do?",
+        "choices": [
+          "Nothing, it's just a comment",
+          "Makes the entire recipe run as a single bash script",
+          "Changes the default shell permanently",
+          "Imports bash functions"
+        ],
+        "correctAnswer": 1,
+        "explanation": "A shebang (#!) as the first line of a recipe makes just run the entire recipe as a single script with that interpreter, rather than executing each line separately.",
+        "category": "Recipe Execution",
+        "difficulty": "medium",
+        "tags": [
+          "shebang",
+          "scripts",
+          "execution"
+        ]
+      },
+      {
+        "id": "ji011",
+        "question": "How do you create an alias for a recipe?",
+        "choices": [
+          "alias newname := oldrecipe",
+          "newname = oldrecipe",
+          "recipe newname -> oldrecipe",
+          "@alias oldrecipe newname"
+        ],
+        "correctAnswer": 0,
+        "explanation": "The 'alias' keyword creates an alternative name for a recipe. This is useful for providing shortcuts or backwards compatibility when renaming recipes.",
+        "category": "Aliases",
+        "difficulty": "medium",
+        "tags": [
+          "alias",
+          "naming",
+          "syntax"
+        ]
+      },
+      {
+        "id": "ji012",
+        "question": "What happens when you use '-' prefix before a command?",
+        "choices": [
+          "The command runs in background",
+          "Errors from that command are ignored",
+          "The command runs with lower priority",
+          "The command output is hidden"
+        ],
+        "correctAnswer": 1,
+        "explanation": "The '-' prefix makes just ignore the exit code of that command, continuing execution even if it fails. Useful for cleanup commands that might fail harmlessly.",
+        "category": "Error Handling",
+        "difficulty": "medium",
+        "tags": [
+          "errors",
+          "prefix",
+          "execution"
+        ]
+      },
+      {
+        "id": "ji013",
+        "question": "How can you export a just variable as an environment variable to recipes?",
+        "choices": [
+          "export VAR_NAME := \"value\"",
+          "env VAR_NAME = \"value\"",
+          "VAR_NAME := export(\"value\")",
+          "set export VAR_NAME"
+        ],
+        "correctAnswer": 0,
+        "explanation": "The 'export' keyword before a variable declaration makes that variable available as an environment variable in all recipes.",
+        "category": "Variables",
+        "difficulty": "medium",
+        "tags": [
+          "export",
+          "environment",
+          "variables"
+        ]
+      },
+      {
+        "id": "ji014",
+        "question": "What's the correct way to use conditional expressions in just?",
+        "choices": [
+          "if os() == \"windows\" then \"win\" else \"unix\"",
+          "os() == \"windows\" ? \"win\" : \"unix\"",
+          "if os() == \"windows\": \"win\" else: \"unix\"",
+          "if os() == \"windows\" { \"win\" } else { \"unix\" }"
+        ],
+        "correctAnswer": 0,
+        "explanation": "Just uses if-then-else syntax for conditional expressions. This is commonly used with functions like os(), arch(), or env_var() to create platform-specific behavior.",
+        "category": "Conditionals",
+        "difficulty": "hard",
+        "tags": [
+          "conditionals",
+          "expressions",
+          "syntax"
+        ]
+      },
+      {
+        "id": "ji015",
+        "question": "How do you include another justfile?",
+        "choices": [
+          "include \"./other.just\"",
+          "import \"./other.just\"",
+          "source ./other.just",
+          "!include \"./other.just\""
+        ],
+        "correctAnswer": 1,
+        "explanation": "The 'import' statement includes recipes from another justfile. This allows you to modularize your commands across multiple files for better organization.",
+        "category": "Modules",
+        "difficulty": "medium",
+        "tags": [
+          "import",
+          "modules",
+          "organization"
+        ]
+      },
+      {
+        "id": "ji016",
+        "question": "What does 'set positional-arguments' do?",
+        "choices": [
+          "Forces all arguments to be named",
+          "Passes arguments as $1, $2, etc. in shell recipes",
+          "Validates argument positions",
+          "Reorders arguments alphabetically"
+        ],
+        "correctAnswer": 1,
+        "explanation": "With 'set positional-arguments', recipe arguments are available as $1, $2, $@ etc. in recipe bodies, similar to shell scripts. This makes it easier to pass arguments to commands.",
+        "category": "Configuration",
+        "difficulty": "hard",
+        "tags": [
+          "positional-arguments",
+          "shell",
+          "configuration"
+        ]
+      },
+      {
+        "id": "ji017",
+        "question": "How can you run a recipe from a parent directory's justfile?",
+        "choices": [
+          "just --search-parent recipe",
+          "just ..recipe",
+          "just -u recipe",
+          "just --parent recipe"
+        ],
+        "correctAnswer": 0,
+        "explanation": "The '--search-parent' flag makes just search for a justfile in parent directories. Useful when working in subdirectories of a project.",
+        "category": "Usage",
+        "difficulty": "medium",
+        "tags": [
+          "search",
+          "parent",
+          "directories"
+        ]
+      },
+      {
+        "id": "ji018",
+        "question": "What's the purpose of {{ }} in recipe bodies?",
+        "choices": [
+          "String interpolation for just variables",
+          "Command substitution",
+          "Regular expression matching",
+          "Template expansion"
+        ],
+        "correctAnswer": 0,
+        "explanation": "Double curly braces {{ }} are used to interpolate just variables and expressions into recipe command lines. This is how you use just variables in your shell commands.",
+        "category": "Interpolation",
+        "difficulty": "medium",
+        "tags": [
+          "interpolation",
+          "variables",
+          "syntax"
+        ]
+      }
+    ]
+  }
+};
+        // Backwards compatibility 
+        
+        window.EMBEDDED_GAME_DATA = {
+  "metadata": {
+    "title": "Just Command Runner - Expert Murderous Quiz",
+    "description": "Tricky questions with plausible but wrong answers to test deep just knowledge",
+    "version": "1.0.0",
+    "targetAge": "Expert just users",
+    "subject": "Just Command Runner Advanced",
+    "mode": "hard"
+  },
+  "questions": [
+    {
+      "id": "jx001",
+      "question": "Which of these is the correct syntax for a recipe with both default and variadic parameters?",
+      "choices": [
+        "recipe arg1=\"default\" *rest:",
+        "recipe arg1=\"default\" +rest:",
+        "recipe *rest arg1=\"default\":",
+        "recipe +rest arg1=\"default\":"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Variadic parameters must come last, but can follow optional parameters with defaults. The '*rest' accepts zero or more args, while '+rest' requires at least one.",
+      "category": "Advanced Syntax",
+      "difficulty": "hard",
+      "tags": [
+        "parameters",
+        "variadic",
+        "defaults"
+      ]
+    },
+    {
+      "id": "jx002",
+      "question": "What happens when you set 'windows-shell' in a cross-platform justfile?",
+      "choices": [
+        "It overrides 'shell' setting on all platforms",
+        "It's ignored on non-Windows systems",
+        "It causes an error on Linux/Mac",
+        "It sets a fallback shell for all platforms"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The 'windows-shell' setting only applies when running on Windows and is ignored on other platforms. This allows you to have platform-specific shell configurations in the same justfile.",
+      "category": "Cross-platform",
+      "difficulty": "hard",
+      "tags": [
+        "windows",
+        "shell",
+        "cross-platform"
+      ]
+    },
+    {
+      "id": "jx003",
+      "question": "In which order are these configuration sources evaluated (first to last)?",
+      "choices": [
+        "justfile, .env file, environment variables, command-line",
+        "command-line, environment variables, .env file, justfile",
+        ".env file, environment variables, justfile, command-line",
+        "environment variables, .env file, justfile, command-line"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Command-line overrides take highest precedence, then environment variables, then .env file (if dotenv-load is set), then justfile defaults. Later sources override earlier ones.",
+      "category": "Configuration Order",
+      "difficulty": "hard",
+      "tags": [
+        "configuration",
+        "precedence",
+        "environment"
+      ]
+    },
+    {
+      "id": "jx004",
+      "question": "What's the difference between backticks and $() in a justfile?",
+      "choices": [
+        "Backticks work in assignments, $() works in recipe bodies",
+        "Backticks are for just expressions, $() is passed to the shell",
+        "No difference, they're interchangeable",
+        "Backticks are deprecated, use $()"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Backticks (``) are evaluated by just during parsing for variable assignments and expressions. $() is shell command substitution that's passed through to the shell in recipe bodies.",
+      "category": "Command Substitution",
+      "difficulty": "hard",
+      "tags": [
+        "backticks",
+        "substitution",
+        "shell"
+      ]
+    },
+    {
+      "id": "jx005",
+      "question": "Which statement about recipe dependencies is FALSE?",
+      "choices": [
+        "Dependencies run in the order listed",
+        "A recipe can depend on a parameterized recipe",
+        "Dependencies can be conditional using expressions",
+        "Circular dependencies are automatically resolved"
+      ],
+      "correctAnswer": 3,
+      "explanation": "Circular dependencies are NOT automatically resolved - they cause an error. Just detects dependency cycles and reports them rather than trying to resolve them.",
+      "category": "Dependencies",
+      "difficulty": "hard",
+      "tags": [
+        "dependencies",
+        "errors",
+        "execution"
+      ]
+    },
+    {
+      "id": "jx006",
+      "question": "When using 'set shell', which is the correct format for PowerShell?",
+      "choices": [
+        "set shell := \"powershell\"",
+        "set shell := [\"powershell.exe\", \"-c\"]",
+        "set shell := [\"pwsh\", \"-c\"]",
+        "set shell := [\"powershell\", \"-Command\"]"
+      ],
+      "correctAnswer": 1,
+      "explanation": "For PowerShell on Windows, use [\"powershell.exe\", \"-c\"]. For PowerShell Core (cross-platform), use [\"pwsh\", \"-c\"]. The array must include the command flag.",
+      "category": "Shell Configuration",
+      "difficulty": "hard",
+      "tags": [
+        "powershell",
+        "shell",
+        "configuration"
+      ]
+    },
+    {
+      "id": "jx007",
+      "question": "What does 'set export' without a variable name do?",
+      "choices": [
+        "Exports all just variables to recipes",
+        "Syntax error - export needs a variable",
+        "Exports only undefined variables",
+        "Exports the current environment"
+      ],
+      "correctAnswer": 0,
+      "explanation": "'set export' (without a variable name) exports ALL just variables as environment variables to recipes, not just those marked with 'export'.",
+      "category": "Environment Export",
+      "difficulty": "hard",
+      "tags": [
+        "export",
+        "environment",
+        "settings"
+      ]
+    },
+    {
+      "id": "jx008",
+      "question": "How does just handle Unicode in recipe names?",
+      "choices": [
+        "Only ASCII characters are allowed",
+        "Unicode is fully supported in recipe names",
+        "Unicode works but breaks --list formatting",
+        "Unicode only works with UTF-8 terminals"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Just fully supports Unicode in recipe names, parameters, and strings. You can have recipes named with emoji or non-ASCII characters: \ud83d\ude80: echo \"Launch!\"",
+      "category": "Unicode Support",
+      "difficulty": "hard",
+      "tags": [
+        "unicode",
+        "internationalization",
+        "names"
+      ]
+    },
+    {
+      "id": "jx009",
+      "question": "What's the interaction between 'set positional-arguments' and default parameters?",
+      "choices": [
+        "They're incompatible - causes an error",
+        "Defaults are ignored with positional-arguments",
+        "Defaults work normally, missing positionals become empty strings",
+        "Positional arguments override defaults"
+      ],
+      "correctAnswer": 2,
+      "explanation": "With positional-arguments, default parameters still work for providing defaults, but in the recipe body, missing positionals become empty strings, not the default values.",
+      "category": "Advanced Parameters",
+      "difficulty": "hard",
+      "tags": [
+        "positional-arguments",
+        "defaults",
+        "parameters"
+      ]
+    },
+    {
+      "id": "jx010",
+      "question": "Which just function returns an empty string if the variable doesn't exist?",
+      "choices": [
+        "env_var('VAR')",
+        "env_var_or_default('VAR', '')",
+        "env('VAR')",
+        "There's no such function"
+      ],
+      "correctAnswer": 1,
+      "explanation": "env_var_or_default('VAR', 'default') returns the default value if VAR doesn't exist, while env_var('VAR') causes an error if the variable is not set.",
+      "category": "Functions",
+      "difficulty": "hard",
+      "tags": [
+        "functions",
+        "environment",
+        "defaults"
+      ]
+    },
+    {
+      "id": "jx011",
+      "question": "What happens with 'mod foo' when foo.just doesn't exist but foo/mod.just does?",
+      "choices": [
+        "Error: foo.just not found",
+        "Automatically uses foo/mod.just",
+        "Searches for foo/justfile",
+        "Creates an empty module"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The 'mod' statement looks for either 'foo.just' or 'foo/mod.just' (also foo/justfile, foo/.justfile). This allows organizing modules in directories.",
+      "category": "Modules",
+      "difficulty": "hard",
+      "tags": [
+        "modules",
+        "organization",
+        "imports"
+      ]
+    },
+    {
+      "id": "jx012",
+      "question": "In recipe bodies, what's the difference between $VAR and ${VAR}?",
+      "choices": [
+        "No difference in just, both work identically",
+        "$VAR is for environment, ${VAR} is for just variables",
+        "${VAR} is required when followed by alphanumerics",
+        "$VAR is deprecated syntax"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Both refer to environment variables, but ${VAR} is needed when the variable name would be ambiguous, like ${VAR}foo vs $VARfoo which would look for variable 'VARfoo'.",
+      "category": "Variable Syntax",
+      "difficulty": "hard",
+      "tags": [
+        "variables",
+        "syntax",
+        "interpolation"
+      ]
+    },
+    {
+      "id": "jx013",
+      "question": "How does 'set fallback' change just's behavior?",
+      "choices": [
+        "Falls back to parent directory's justfile",
+        "Falls back to default shell if set shell fails",
+        "Falls back to .justfile if justfile doesn't exist",
+        "Falls back to first recipe if requested recipe doesn't exist"
+      ],
+      "correctAnswer": 0,
+      "explanation": "'set fallback' (deprecated for --fallback flag) makes just search parent directories for a justfile if the current directory doesn't have one.",
+      "category": "Settings",
+      "difficulty": "hard",
+      "tags": [
+        "fallback",
+        "settings",
+        "search"
+      ]
+    },
+    {
+      "id": "jx014",
+      "question": "What does the 'invocation_directory()' function return?",
+      "choices": [
+        "The directory containing the justfile",
+        "The directory where 'just' command was run",
+        "The user's home directory",
+        "The current working directory during execution"
+      ],
+      "correctAnswer": 1,
+      "explanation": "invocation_directory() returns where you ran the 'just' command from, while justfile_directory() returns where the justfile is located. These can differ when using -f or --working-directory.",
+      "category": "Functions",
+      "difficulty": "hard",
+      "tags": [
+        "functions",
+        "directories",
+        "paths"
+      ]
+    },
+    {
+      "id": "jx015",
+      "question": "Which is true about string escaping in just?",
+      "choices": [
+        "Use \\n for newline in both 'single' and \"double\" quotes",
+        "Escape sequences only work in \"double\" quotes",
+        "Triple quotes '''...''' prevent all escaping",
+        "Backticks require different escaping rules"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Escape sequences like \\n, \\t only work in double-quoted strings. Single quotes preserve literal characters. Triple quotes are not supported in just.",
+      "category": "String Handling",
+      "difficulty": "hard",
+      "tags": [
+        "strings",
+        "escaping",
+        "quotes"
+      ]
+    },
+    {
+      "id": "jx016",
+      "question": "What's the effect of '[private]' attribute on a recipe?",
+      "choices": [
+        "Same as starting the name with underscore",
+        "Hides it from --list but shows with --list --private",
+        "Makes it only callable from other recipes",
+        "Requires confirmation before running"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The '[private]' attribute has the same effect as prefixing the recipe name with underscore - it hides the recipe from --list output but it can still be run directly.",
+      "category": "Attributes",
+      "difficulty": "hard",
+      "tags": [
+        "attributes",
+        "private",
+        "visibility"
+      ]
+    },
+    {
+      "id": "jx017",
+      "question": "How are recipe arguments handled when using shebang recipes?",
+      "choices": [
+        "Passed as command-line arguments to the script",
+        "Set as environment variables",
+        "Interpolated into the script before execution",
+        "Not available in shebang recipes"
+      ],
+      "correctAnswer": 0,
+      "explanation": "In shebang recipes, arguments are passed as command-line arguments to the script interpreter, accessible as $1, $2, etc. in shell scripts or sys.argv in Python.",
+      "category": "Shebang Recipes",
+      "difficulty": "hard",
+      "tags": [
+        "shebang",
+        "arguments",
+        "scripts"
+      ]
+    },
+    {
+      "id": "jx018",
+      "question": "What does 'set tempdir' affect?",
+      "choices": [
+        "Where just creates temporary files for shebang recipes",
+        "The TMPDIR environment variable in recipes",
+        "Where .env files are searched",
+        "The working directory for recipes"
+      ],
+      "correctAnswer": 0,
+      "explanation": "'set tempdir' changes where just writes temporary script files when executing shebang recipes. It doesn't affect the TMPDIR environment variable or recipe execution.",
+      "category": "Settings",
+      "difficulty": "hard",
+      "tags": [
+        "tempdir",
+        "settings",
+        "shebang"
+      ]
+    },
+    {
+      "id": "jx019",
+      "question": "Which statement about 'import' vs 'mod' is correct?",
+      "choices": [
+        "import brings recipes into current namespace, mod creates a namespace",
+        "They're aliases for the same functionality",
+        "mod is deprecated in favor of import",
+        "import is for .just files, mod is for directories"
+      ],
+      "correctAnswer": 0,
+      "explanation": "'import' brings recipes directly into the current namespace (can cause conflicts), while 'mod' creates a module namespace requiring 'module::recipe' to call recipes.",
+      "category": "Modules",
+      "difficulty": "hard",
+      "tags": [
+        "import",
+        "mod",
+        "namespaces"
+      ]
+    },
+    {
+      "id": "jx020",
+      "question": "What happens if a recipe has both '@' prefix and '-' prefix on the same line?",
+      "choices": [
+        "Syntax error - can't combine prefixes",
+        "Both effects apply: suppress echo and ignore errors",
+        "Only the first prefix takes effect",
+        "Order matters: @- vs -@ have different effects"
+      ],
+      "correctAnswer": 1,
+      "explanation": "You can combine prefixes like '@-' or '-@' (order doesn't matter). The command won't be echoed (@) and errors will be ignored (-). This is useful for optional cleanup commands.",
+      "category": "Recipe Modifiers",
+      "difficulty": "hard",
+      "tags": [
+        "prefixes",
+        "modifiers",
+        "combinations"
+      ]
+    }
+  ]
+};
+        
+        
+        // Build information
+        window.BUILD_INFO = {
+            timestamp: "2025-08-08T23:32:13.480645",
+            timestampUnix: 1754692333,
+            version: "dev-build"
+        };
+        
+        // Debug logging
+        console.log("🏗️ Build info:", window.BUILD_INFO);
+        console.log("🚀 Page loaded and ready.");
+    </script>
+    
+    <!-- Embedded CSS -->
+    <style>
+        /* Modern CSS Reset and Base Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#game-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Screen Management */
+.screen {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    text-align: center;
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Loading Screen */
+.loading-content h1 {
+    color: #4a5568;
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #e2e8f0;
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Start Screen */
+.start-content h1 {
+    color: #2d3748;
+    margin-bottom: 20px;
+    font-size: 2.5rem;
+}
+
+.start-content p {
+    font-size: 1.2rem;
+    color: #4a5568;
+    margin-bottom: 30px;
+}
+
+/* Question Set Selector */
+.question-set-selector-container {
+    background: #f7fafc;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0 30px 0;
+    text-align: left;
+}
+
+.question-set-selector-container label {
+    display: block;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.question-set-selector {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    background: white;
+    font-size: 1rem;
+    color: #2d3748;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.question-set-selector:hover {
+    border-color: #667eea;
+}
+
+.question-set-selector:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Game Screen */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f7fafc;
+    border-radius: 12px;
+}
+
+.counter, .score {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #4a5568;
+}
+
+.question-container {
+    text-align: center;
+}
+
+.question {
+    font-size: 1.8rem;
+    color: #2d3748;
+    margin-bottom: 40px;
+    line-height: 1.4;
+}
+
+.choices {
+    display: grid;
+    gap: 15px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.choice-button {
+    background: #f7fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+}
+
+.choice-button:hover:not(:disabled) {
+    background: #edf2f7;
+    border-color: #667eea;
+    transform: translateY(-2px);
+}
+
+.choice-button:disabled {
+    cursor: not-allowed;
+}
+
+.choice-button.correct {
+    background: #c6f6d5;
+    border-color: #38a169;
+    color: #22543d;
+}
+
+.choice-button.incorrect {
+    background: #fed7d7;
+    border-color: #e53e3e;
+    color: #742a2a;
+}
+
+/* Result Screen */
+.result-content {
+    text-align: center;
+}
+
+.result-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+.result-text {
+    font-size: 2rem;
+    margin-bottom: 30px;
+    color: #2d3748;
+}
+
+.explanation-container {
+    background: #f7fafc;
+    border-radius: 12px;
+    padding: 30px;
+    margin: 30px 0;
+    text-align: left;
+}
+
+.explanation-container h3 {
+    color: #4a5568;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+}
+
+.explanation {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #2d3748;
+}
+
+/* Finish Screen */
+.finish-content h1 {
+    color: #2d3748;
+    margin-bottom: 40px;
+    font-size: 2.5rem;
+}
+
+.final-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin: 40px 0;
+}
+
+.stat-item {
+    background: #f7fafc;
+    border-radius: 12px;
+    padding: 30px;
+}
+
+.stat-item h2 {
+    color: #4a5568;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+}
+
+.big-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #667eea;
+}
+
+.finish-message {
+    margin: 30px 0;
+}
+
+.finish-message p {
+    font-size: 1.2rem;
+    color: #4a5568;
+    font-style: italic;
+}
+
+/* Buttons */
+.primary-button {
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+}
+
+.primary-button:hover {
+    background: #5a67d8;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+.primary-button:active {
+    transform: translateY(0);
+}
+
+/* Error Styling */
+.error {
+    text-align: center;
+    color: #e53e3e;
+}
+
+.error h2 {
+    margin-bottom: 20px;
+}
+
+.error button {
+    background: #e53e3e;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+/* Build Info Footer */
+.build-info {
+    position: fixed;
+    bottom: 5px;
+    right: 10px;
+    opacity: 0.5;
+    font-size: 10px;
+    color: #666;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.build-info:hover {
+    opacity: 0.8;
+}
+
+/* Question Set Tiles */
+.question-set-tiles-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+    width: 100%;
+}
+
+.question-set-tile {
+    background: #f7fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.question-set-tile:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    border-color: #667eea;
+}
+
+.tile-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2d3748;
+    transition: opacity 0.3s ease;
+}
+
+.tile-description {
+    display: none; /* Hide descriptions inside tiles - they'll show below instead */
+}
+
+.question-set-tile:hover .tile-title {
+    /* Keep title visible on hover - no text changes in tiles */
+}
+
+/* Fixed height for description to prevent tile jiggling */
+#game-description {
+    min-height: 4.2em; /* Reserve space for up to 3 lines of text */
+    line-height: 1.4;
+    margin-top: 20px;
+    padding: 10px 0;
+    text-align: center;
+    color: #666;
+    overflow: hidden; /* Prevent text from extending beyond reserved space */
+}
+
+/* Game Info (removed from original design) */
+.game-info {
+    display: none;
+}
+
+/* Start button (removed from original design) */
+#start-button {
+    display: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #game-container {
+        padding: 10px;
+    }
+    
+    .screen {
+        padding: 20px;
+        margin: 10px;
+    }
+    
+    .question {
+        font-size: 1.5rem;
+    }
+    
+    .choice-button {
+        padding: 15px;
+        font-size: 1rem;
+    }
+    
+    .final-stats {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .game-header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .start-content h1,
+    .finish-content h1 {
+        font-size: 2rem;
+    }
+    
+    .question {
+        font-size: 1.3rem;
+    }
+    
+    .big-number {
+        font-size: 2rem;
+    }
+}
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <!-- Loading Screen -->
+        <div class="screen" id="loading-screen">
+            <div class="loading-content">
+                <h1>🔧 Just The Game</h1>
+                <div class="spinner"></div>
+                <p>Loading questions...</p>
+            </div>
+        </div>
+        
+        <!-- Start Screen -->
+        <div class="screen" id="start-screen" style="display: none;">
+            <div class="start-content">
+                <h1 id="game-title">Just The Game</h1>
+                
+                <!-- Question Set Tiles -->
+                <div id="question-set-tiles" class="question-set-tiles-container">
+                    <!-- Tiles will be dynamically inserted here -->
+                </div>
+                
+                <!-- Description appears below tiles and changes on hover -->
+                <p id="game-description">Select a topic to begin.</p>
+            </div>
+        </div>
+        
+        <!-- Game Screen -->
+        <div class="screen" id="game-screen" style="display: none;">
+            <div class="game-header">
+                <div class="counter" id="question-counter">Question 1 of 6</div>
+                <div class="score" id="score-display">Score: 0/0</div>
+            </div>
+            <div class="question-container">
+                <h2 class="question" id="question-text">Loading question...</h2>
+                <div class="choices" id="choices-container">
+                    <!-- Choice buttons will be inserted here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Result Screen -->
+        <div class="screen" id="result-screen" style="display: none;">
+            <div class="result-content">
+                <div class="result-icon" id="result-icon">✅</div>
+                <h2 class="result-text" id="result-text">Correct!</h2>
+                <div class="explanation-container">
+                    <h3>Learn More:</h3>
+                    <p class="explanation" id="explanation-text">Explanation will appear here...</p>
+                </div>
+                <button class="primary-button" id="next-button">Next Question</button>
+            </div>
+        </div>
+        
+        <!-- Finish Screen -->
+        <div class="screen" id="finish-screen" style="display: none;">
+            <div class="finish-content">
+                <h1>🎉 Well Done!</h1>
+                <div class="final-stats">
+                    <div class="stat-item">
+                        <h2>Final Score</h2>
+                        <div class="big-number" id="final-score">0 out of 6</div>
+                    </div>
+                    <div class="stat-item">
+                        <h2>Accuracy</h2>
+                        <div class="big-number" id="final-percentage">0%</div>
+                    </div>
+                </div>
+                <div class="finish-message">
+                    <p>Great job learning about Just! Keep practicing recipes to automate your workflow.</p>
+                </div>
+                <button class="primary-button" id="play-again-button">Play Again</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Build info footer -->
+    <div class="build-info">
+        <small>vdev-build • Built: 2025-08-08T23:32:13</small>
+    </div>
+    
+    <!-- Embedded JavaScript -->
+    <script>
+        /**
+ * Just The Game Engine
+ * Core logic for flash-card quiz game
+ */
+
+class GameEngine {
+    constructor() {
+        this.questions = [];
+        this.currentQuestionIndex = 0;
+        this.score = 0;
+        this.answered = 0;
+        this.gameState = 'loading'; // loading, ready, playing, question-answered, finished
+        this.currentQuestion = null;
+        this.userAnswer = null;
+        this.gameData = null;
+    }
+
+    /**
+     * Load questions from JSON data
+     * @param {Object} gameData - The complete game data object
+     */
+    async loadQuestions(gameData) {
+        try {
+            this.gameData = gameData;
+            this.questions = gameData.questions || [];
+            this.shuffleQuestions();
+            this.currentQuestionIndex = 0;
+            this.score = 0;
+            this.answered = 0;
+            this.gameState = 'ready';
+            this.currentQuestion = null;
+            this.userAnswer = null;
+            
+            console.log(`Loaded ${this.questions.length} questions`);
+            return true;
+        } catch (error) {
+            console.error('Error loading questions:', error);
+            this.gameState = 'error';
+            return false;
+        }
+    }
+
+    /**
+     * Shuffle questions for random order
+     */
+    shuffleQuestions() {
+        for (let i = this.questions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [this.questions[i], this.questions[j]] = [this.questions[j], this.questions[i]];
+        }
+    }
+
+    /**
+     * Start the game
+     */
+    startGame() {
+        if (this.gameState !== 'ready') {
+            throw new Error('Game not ready to start');
+        }
+        
+        this.currentQuestionIndex = 0;
+        this.score = 0;
+        this.answered = 0;
+        this.gameState = 'playing';
+        this.loadCurrentQuestion();
+    }
+
+    /**
+     * Load the current question
+     */
+    loadCurrentQuestion() {
+        if (this.currentQuestionIndex >= this.questions.length) {
+            this.gameState = 'finished';
+            return null;
+        }
+
+        this.currentQuestion = this.questions[this.currentQuestionIndex];
+        this.userAnswer = null;
+        this.gameState = 'playing';
+        console.log(`🎯 DEBUG: Question ${this.currentQuestionIndex + 1} correct answer is index ${this.currentQuestion.correctAnswer}`);
+        return this.currentQuestion;
+    }
+
+    /**
+     * Submit an answer for the current question
+     * @param {number} answerIndex - Index of the selected answer
+     */
+    submitAnswer(answerIndex) {
+        if (this.gameState !== 'playing' || !this.currentQuestion) {
+            throw new Error('No active question to answer');
+        }
+
+        if (answerIndex < 0 || answerIndex >= this.currentQuestion.choices.length) {
+            throw new Error('Invalid answer index');
+        }
+
+        this.userAnswer = answerIndex;
+        const isCorrect = answerIndex === this.currentQuestion.correctAnswer;
+        const mode = this.getMetadata().mode || 'hard';
+
+        // In easy mode, if the answer is incorrect, we don't advance the game state.
+        // We just provide feedback that the answer was wrong.
+        if (mode === 'easy' && !isCorrect) {
+            return {
+                correct: false,
+                correctAnswerIndex: this.currentQuestion.correctAnswer,
+                userAnswerText: this.currentQuestion.choices[answerIndex],
+                explanation: 'That wasn\'t correct. Try another answer!',
+                mode: 'easy'
+            };
+        }
+        
+        this.answered++;
+        
+        if (isCorrect) {
+            this.score++;
+        }
+
+        this.gameState = 'question-answered';
+        
+        return {
+            correct: isCorrect,
+            correctAnswerIndex: this.currentQuestion.correctAnswer,
+            correctAnswerText: this.currentQuestion.choices[this.currentQuestion.correctAnswer],
+            userAnswerText: this.currentQuestion.choices[answerIndex],
+            explanation: this.currentQuestion.explanation,
+            mode: mode
+        };
+    }
+
+    /**
+     * Move to the next question
+     */
+    nextQuestion() {
+        if (this.gameState !== 'question-answered') {
+            throw new Error('Must answer current question first');
+        }
+
+        this.currentQuestionIndex++;
+        return this.loadCurrentQuestion();
+    }
+
+    /**
+     * Get current game statistics
+     */
+    getStats() {
+        return {
+            score: this.score,
+            answered: this.answered,
+            total: this.questions.length,
+            percentage: this.answered > 0 ? Math.round((this.score / this.answered) * 100) : 0,
+            remaining: this.questions.length - this.currentQuestionIndex,
+            gameState: this.gameState
+        };
+    }
+
+    /**
+     * Get current question data
+     */
+    getCurrentQuestion() {
+        return this.currentQuestion;
+    }
+
+    /**
+     * Reset the game to initial state
+     */
+    reset() {
+        this.currentQuestionIndex = 0;
+        this.score = 0;
+        this.answered = 0;
+        this.gameState = this.questions.length > 0 ? 'ready' : 'loading';
+        this.currentQuestion = null;
+        this.userAnswer = null;
+    }
+
+    /**
+     * Get game metadata
+     */
+    getMetadata() {
+        return this.gameData?.metadata || {};
+    }
+
+    /**
+     * Check if game is finished
+     */
+    isFinished() {
+        return this.gameState === 'finished';
+    }
+
+    /**
+     * Check if question has been answered
+     */
+    isQuestionAnswered() {
+        return this.gameState === 'question-answered';
+    }
+
+    /**
+     * Check if game is ready to play
+     */
+    isReady() {
+        return this.gameState === 'ready';
+    }
+
+    /**
+     * Check if currently playing
+     */
+    isPlaying() {
+        return this.gameState === 'playing';
+    }
+}
+
+/**
+ * UI Controller for Just The Game
+ * Handles all user interface interactions and updates
+ */
+
+class UIController {
+    constructor(gameEngine) {
+        this.game = gameEngine;
+        this.elements = {};
+        this.init();
+    }
+
+    /**
+     * Initialize UI elements and event listeners
+     */
+    init() {
+        // Cache DOM elements
+        this.elements = {
+            gameContainer: document.getElementById('game-container'),
+            loadingScreen: document.getElementById('loading-screen'),
+            startScreen: document.getElementById('start-screen'),
+            gameScreen: document.getElementById('game-screen'),
+            resultScreen: document.getElementById('result-screen'),
+            finishScreen: document.getElementById('finish-screen'),
+            gameTitle: document.getElementById('game-title'),
+            gameDescription: document.getElementById('game-description'),
+            questionCounter: document.getElementById('question-counter'),
+            scoreDisplay: document.getElementById('score-display'),
+            questionText: document.getElementById('question-text'),
+            choicesContainer: document.getElementById('choices-container'),
+            resultIcon: document.getElementById('result-icon'),
+            resultText: document.getElementById('result-text'),
+            explanationText: document.getElementById('explanation-text'),
+            nextButton: document.getElementById('next-button'),
+            finalScore: document.getElementById('final-score'),
+            finalPercentage: document.getElementById('final-percentage'),
+            playAgainButton: document.getElementById('play-again-button'),
+            questionSetTilesContainer: document.getElementById('question-set-tiles')
+        };
+
+        this.bindEvents();
+    }
+
+    /**
+     * Bind event listeners
+     */
+    bindEvents() {
+        if (this.elements.nextButton) {
+            this.elements.nextButton.addEventListener('click', () => this.nextQuestion());
+        }
+        
+        if (this.elements.playAgainButton) {
+            this.elements.playAgainButton.addEventListener('click', () => this.restartGame());
+        }
+    }
+
+    /**
+     * Load game data and initialize
+     */
+    async loadGame() {
+        this.showScreen('loading');
+        
+        try {
+            const response = await fetch('./data/questions.json');
+            const gameData = await response.json();
+            
+            const success = await this.game.loadQuestions(gameData);
+            if (success) {
+                this.updateStartScreen();
+                this.showScreen('start');
+            } else {
+                this.showError('Failed to load game data');
+            }
+        } catch (error) {
+            console.error('Error loading game:', error);
+            this.showError('Failed to load game. Please check your connection.');
+        }
+    }
+
+    /**
+     * Load embedded game data (for packed version)
+     */
+    async loadEmbeddedGame() {
+        this.showScreen('loading');
+        
+        try {
+            // Use embedded data instead of fetching
+            if (window.EMBEDDED_GAME_DATA) {
+                const success = await this.game.loadQuestions(window.EMBEDDED_GAME_DATA);
+                if (success) {
+                    this.updateStartScreen();
+                    this.showScreen('start');
+                } else {
+                    this.showError('Failed to load embedded game data');
+                }
+            } else {
+                this.showError('No embedded game data found');
+            }
+        } catch (error) {
+            console.error('Error loading embedded game:', error);
+            this.showError('Failed to load embedded game data.');
+        }
+    }
+
+    /**
+     * Load embedded question sets (for packed version with multiple sets)
+     */
+    async loadEmbeddedQuestionSets() {
+        this.showScreen('loading');
+        
+        try {
+            if (window.EMBEDDED_QUESTION_SETS) {
+                this.questionSets = window.EMBEDDED_QUESTION_SETS;
+                
+                // Load the first available question set by default
+                const firstKey = Object.keys(this.questionSets)[0];
+                if (firstKey) {
+                    const success = await this.game.loadQuestions(this.questionSets[firstKey]);
+                    if (success) {
+                        this.currentQuestionSetKey = firstKey;
+                        // Set the selector to the first key
+                        if (this.elements.questionSetSelector) {
+                            this.elements.questionSetSelector.value = firstKey;
+                        }
+                        this.updateStartScreenWithQuestionSets();
+                        this.showScreen('start');
+                    } else {
+                        this.showError('Failed to load question set');
+                    }
+                } else {
+                    this.showError('No question sets found');
+                }
+            } else {
+                // Fallback to single embedded data for backwards compatibility
+                this.loadEmbeddedGame();
+            }
+        } catch (error) {
+            console.error('Error loading embedded question sets:', error);
+            this.showError('Failed to load question sets.');
+        }
+    }
+
+    /**
+     * Handle question set selection change
+     */
+    async onQuestionSetChange(selectedKey) {
+        if (this.questionSets && this.questionSets[selectedKey]) {
+            const success = await this.game.loadQuestions(this.questionSets[selectedKey]);
+            if (success) {
+                this.currentQuestionSetKey = selectedKey;
+                this.updateQuestionSetInfo();
+            }
+        }
+    }
+
+    /**
+     * Update start screen with multiple question sets as tiles
+     */
+    updateStartScreenWithQuestionSets() {
+        if (this.questionSets && this.elements.questionSetTilesContainer) {
+            this.elements.questionSetTilesContainer.innerHTML = ''; // Clear existing tiles
+
+            for (const key in this.questionSets) {
+                if (Object.hasOwnProperty.call(this.questionSets, key)) {
+                    const questionSet = this.questionSets[key];
+                    const metadata = questionSet.metadata || {};
+
+                    const tile = document.createElement('div');
+                    tile.className = 'question-set-tile';
+                    tile.dataset.key = key;
+
+                    const title = document.createElement('h3');
+                    title.className = 'tile-title';
+                    title.textContent = metadata.title || key.replace(/_/g, ' ');
+
+                    const description = document.createElement('p');
+                    description.className = 'tile-description';
+                    description.textContent = metadata.description || 'A set of questions on this topic.';
+
+                    tile.appendChild(title);
+                    tile.appendChild(description);
+
+                    // Add hover events to show description below tiles
+                    tile.addEventListener('mouseenter', () => {
+                        if (this.elements.gameDescription) {
+                            this.elements.gameDescription.textContent = metadata.description || 'A set of questions on this topic.';
+                        }
+                    });
+                    
+                    tile.addEventListener('mouseleave', () => {
+                        if (this.elements.gameDescription) {
+                            this.elements.gameDescription.textContent = 'Select a topic to begin.';
+                        }
+                    });
+
+                    tile.addEventListener('click', () => this.startGame(key));
+
+                    this.elements.questionSetTilesContainer.appendChild(tile);
+                }
+            }
+        }
+    }
+
+    /**
+     * Update start screen with game metadata
+     */
+    updateStartScreen() {
+        // This function is now simplified as tiles handle most of the info.
+        // We can set a generic title or description if needed.
+        if (this.elements.gameTitle) {
+            this.elements.gameTitle.textContent = "Just The Game";
+        }
+        if (this.elements.gameDescription) {
+            this.elements.gameDescription.textContent = "Select a topic to begin your learning journey.";
+        }
+    }
+
+    /**
+     * Start the game with a specific question set
+     * @param {string} questionSetKey - The key for the selected question set
+     */
+    async startGame(questionSetKey) {
+        if (!questionSetKey || !this.questionSets[questionSetKey]) {
+            this.showError('Please select a valid question set to start.');
+            return;
+        }
+        
+        this.currentQuestionSetKey = questionSetKey;
+        const selectedSet = this.questionSets[this.currentQuestionSetKey];
+
+        await this.game.loadQuestions(selectedSet);
+        this.game.startGame();
+        this.showQuestion();
+        this.showScreen('game');
+    }
+
+    /**
+     * Display current question
+     */
+    showQuestion() {
+        const question = this.game.getCurrentQuestion();
+        const stats = this.game.getStats();
+        
+        if (!question) {
+            this.showFinishScreen();
+            return;
+        }
+
+        // Update question counter and score
+        if (this.elements.questionCounter) {
+            this.elements.questionCounter.textContent = 
+                `Question ${stats.answered + 1} of ${stats.total}`;
+        }
+        
+        if (this.elements.scoreDisplay) {
+            this.elements.scoreDisplay.textContent = 
+                `Score: ${stats.score}/${stats.answered}`;
+        }
+
+        // Display question
+        if (this.elements.questionText) {
+            this.elements.questionText.textContent = question.question;
+        }
+
+        // Create choice buttons
+        this.createChoiceButtons(question.choices);
+    }
+
+    /**
+     * Create clickable choice buttons
+     */
+    createChoiceButtons(choices) {
+        if (!this.elements.choicesContainer) return;
+
+        this.elements.choicesContainer.innerHTML = '';
+        
+        choices.forEach((choice, index) => {
+            const button = document.createElement('button');
+            button.className = 'choice-button';
+            button.textContent = choice;
+            button.onclick = () => {
+                console.log(`Choice ${index} clicked: ${choice}`);
+                this.selectAnswer(index);
+            };
+            
+            this.elements.choicesContainer.appendChild(button);
+        });
+        console.log(`Created ${choices.length} choice buttons`);
+    }
+
+    /**
+     * Handle answer selection
+     */
+    selectAnswer(answerIndex) {
+        console.log(`selectAnswer called with index: ${answerIndex}`);
+        
+        const result = this.game.submitAnswer(answerIndex);
+        console.log('Answer submitted, result:', result);
+
+        const buttons = this.elements.choicesContainer.querySelectorAll('.choice-button');
+        const selectedButton = buttons[answerIndex];
+
+        // Easy mode, incorrect answer: just mark it red and stop.
+        if (result.mode === 'easy' && !result.correct) {
+            selectedButton.classList.add('incorrect');
+            selectedButton.disabled = true; // Prevent clicking the same wrong answer
+            console.log('Easy mode, incorrect answer. Allowing another try.');
+            return; // Stop here, don't show result screen
+        }
+
+        // Hard mode OR Correct answer in easy mode: proceed to result screen.
+        
+        // Disable all choice buttons
+        buttons.forEach(button => button.disabled = true);
+        
+        // Highlight correct and incorrect answers
+        buttons.forEach((button, index) => {
+            if (index === result.correctAnswerIndex) {
+                button.classList.add('correct');
+            } else if (index === answerIndex && !result.correct) {
+                // This case only happens in hard mode now
+                button.classList.add('incorrect');
+            }
+        });
+
+        // Show result after a brief delay
+        setTimeout(() => {
+            console.log('About to show result screen...');
+            this.showResult(result);
+        }, 800);
+    }
+
+    /**
+     * Show answer result and explanation
+     */
+    showResult(result) {
+        if (this.elements.resultIcon) {
+            this.elements.resultIcon.textContent = result.correct ? '✅' : '❌';
+        }
+        
+        if (this.elements.resultText) {
+            this.elements.resultText.textContent = result.correct 
+                ? 'Correct!' 
+                : `Incorrect. The correct answer was: ${result.correctAnswerText}`;
+        }
+        
+        if (this.elements.explanationText) {
+            this.elements.explanationText.textContent = result.explanation;
+        }
+
+        console.log('Showing result screen...');
+        this.showScreen('result');
+    }
+
+    /**
+     * Move to next question
+     */
+    nextQuestion() {
+        const nextQ = this.game.nextQuestion();
+        
+        if (nextQ) {
+            this.showQuestion();
+            this.showScreen('game');
+        } else {
+            this.showFinishScreen();
+        }
+    }
+
+    /**
+     * Show final results
+     */
+    showFinishScreen() {
+        const stats = this.game.getStats();
+        
+        if (this.elements.finalScore) {
+            this.elements.finalScore.textContent = `${stats.score} out of ${stats.total}`;
+        }
+        
+        if (this.elements.finalPercentage) {
+            this.elements.finalPercentage.textContent = `${stats.percentage}%`;
+        }
+
+        this.showScreen('finish');
+    }
+
+    /**
+     * Restart the game by reloading the page.
+     */
+    restartGame() {
+        console.log('🔄 [UI] Restarting game by reloading the page.');
+        location.reload();
+    }
+
+    /**
+     * Show specific screen
+     */
+    showScreen(screenName) {
+        // Hide all screens
+        Object.values(this.elements).forEach(element => {
+            if (element && element.classList && element.classList.contains('screen')) {
+                element.style.display = 'none';
+            }
+        });
+
+        // Show requested screen
+        const screenMap = {
+            'loading': this.elements.loadingScreen,
+            'start': this.elements.startScreen,
+            'game': this.elements.gameScreen,
+            'result': this.elements.resultScreen,
+            'finish': this.elements.finishScreen
+        };
+
+        const targetScreen = screenMap[screenName];
+        if (targetScreen) {
+            targetScreen.style.display = 'block';
+        }
+    }
+
+    /**
+     * Show error message
+     */
+    showError(message) {
+        // Simple error display - could be enhanced with a proper error screen
+        if (this.elements.loadingScreen) {
+            this.elements.loadingScreen.innerHTML = `
+                <div class="error">
+                    <h2>Error</h2>
+                    <p>${message}</p>
+                    <button onclick="location.reload()">Retry</button>
+                </div>
+            `;
+        }
+    }
+}
+
+
+    </script>
+    
+    <!-- Game Initialization -->
+    <script>
+        // Initialize the game when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const gameEngine = new GameEngine();
+            const uiController = new UIController(gameEngine);
+            
+            // Start loading the game with multiple question sets
+            uiController.loadEmbeddedQuestionSets();
+        });
+    </script>
+</body>
+</html>

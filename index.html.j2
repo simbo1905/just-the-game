@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Just The Game</title>
+    
+    <!-- Embedded Question Sets -->
+    <script>
+        window.EMBEDDED_QUESTION_SETS = {{ question_sets_json | safe }};
+        // Backwards compatibility 
+        {% if default_question_set %}
+        window.EMBEDDED_GAME_DATA = {{ default_question_set | safe }};
+        {% endif %}
+        
+        // Build information
+        window.BUILD_INFO = {
+            timestamp: "{{ build_timestamp }}",
+            timestampUnix: {{ build_timestamp_unix }},
+            version: "{{ version }}"
+        };
+        
+        // Debug logging
+        console.log("🏗️ Build info:", window.BUILD_INFO);
+        console.log("🚀 Page loaded and ready.");
+    </script>
+    
+    <!-- Embedded CSS -->
+    <style>
+        {{ css_content | safe }}
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <!-- Loading Screen -->
+        <div class="screen" id="loading-screen">
+            <div class="loading-content">
+                <h1>🔧 Just The Game</h1>
+                <div class="spinner"></div>
+                <p>Loading questions...</p>
+            </div>
+        </div>
+        
+        <!-- Start Screen -->
+        <div class="screen" id="start-screen" style="display: none;">
+            <div class="start-content">
+                <h1 id="game-title">Just The Game</h1>
+                
+                <!-- Question Set Tiles -->
+                <div id="question-set-tiles" class="question-set-tiles-container">
+                    <!-- Tiles will be dynamically inserted here -->
+                </div>
+                
+                <!-- Description appears below tiles and changes on hover -->
+                <p id="game-description">Select a topic to begin.</p>
+            </div>
+        </div>
+        
+        <!-- Game Screen -->
+        <div class="screen" id="game-screen" style="display: none;">
+            <div class="game-header">
+                <div class="counter" id="question-counter">Question 1 of 6</div>
+                <div class="score" id="score-display">Score: 0/0</div>
+            </div>
+            <div class="question-container">
+                <h2 class="question" id="question-text">Loading question...</h2>
+                <div class="choices" id="choices-container">
+                    <!-- Choice buttons will be inserted here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Result Screen -->
+        <div class="screen" id="result-screen" style="display: none;">
+            <div class="result-content">
+                <div class="result-icon" id="result-icon">✅</div>
+                <h2 class="result-text" id="result-text">Correct!</h2>
+                <div class="explanation-container">
+                    <h3>Learn More:</h3>
+                    <p class="explanation" id="explanation-text">Explanation will appear here...</p>
+                </div>
+                <button class="primary-button" id="next-button">Next Question</button>
+            </div>
+        </div>
+        
+        <!-- Finish Screen -->
+        <div class="screen" id="finish-screen" style="display: none;">
+            <div class="finish-content">
+                <h1>🎉 Well Done!</h1>
+                <div class="final-stats">
+                    <div class="stat-item">
+                        <h2>Final Score</h2>
+                        <div class="big-number" id="final-score">0 out of 6</div>
+                    </div>
+                    <div class="stat-item">
+                        <h2>Accuracy</h2>
+                        <div class="big-number" id="final-percentage">0%</div>
+                    </div>
+                </div>
+                <div class="finish-message">
+                    <p>Great job learning about Just! Keep practicing recipes to automate your workflow.</p>
+                </div>
+                <button class="primary-button" id="play-again-button">Play Again</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Build info footer -->
+    <div class="build-info">
+        <small>v{{ version }} • Built: {{ build_timestamp[:19] }}</small>
+    </div>
+    
+    <!-- Embedded JavaScript -->
+    <script>
+        {{ js_content | safe }}
+    </script>
+    
+    <!-- Game Initialization -->
+    <script>
+        // Initialize the game when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const gameEngine = new GameEngine();
+            const uiController = new UIController(gameEngine);
+            
+            // Start loading the game with multiple question sets
+            uiController.loadEmbeddedQuestionSets();
+        });
+    </script>
+</body>
+</html>

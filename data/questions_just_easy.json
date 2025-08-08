@@ -1,0 +1,237 @@
+{
+    "metadata": {
+      "title": "Just Command Runner - Getting Started",
+      "description": "Introduction to just for developers new to task runners and build tools",
+      "version": "1.0.0",
+      "targetAge": "All developers",
+      "subject": "Just Command Runner Basics",
+      "mode": "easy"
+    },
+    "questions": [
+      {
+        "id": "je001",
+        "question": "What is 'just' primarily used for?",
+        "choices": [
+          "Writing web applications",
+          "Running project-specific commands and tasks",
+          "Compiling Rust code only",
+          "Managing git repositories"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Just is a command runner that helps you save and run project-specific commands. It's like having a menu of useful commands for your project that anyone can easily discover and use.",
+        "category": "Basic Concepts",
+        "difficulty": "easy",
+        "tags": ["basics", "introduction", "command-runner"]
+      },
+      {
+        "id": "je002",
+        "question": "What file does just look for to find your commands?",
+        "choices": [
+          "Makefile",
+          "package.json",
+          "justfile",
+          "build.sh"
+        ],
+        "correctAnswer": 2,
+        "explanation": "Just looks for a file called 'justfile' (or 'Justfile', '.justfile') in your project directory. This is where you define all your recipes (commands).",
+        "category": "Basic Concepts",
+        "difficulty": "easy",
+        "tags": ["justfile", "configuration", "basics"]
+      },
+      {
+        "id": "je003",
+        "question": "What do we call the commands you define in a justfile?",
+        "choices": [
+          "Scripts",
+          "Recipes",
+          "Tasks",
+          "Functions"
+        ],
+        "correctAnswer": 1,
+        "explanation": "In just terminology, the commands you define are called 'recipes'. Each recipe is a set of commands that can be run with 'just recipe-name'.",
+        "category": "Basic Concepts",
+        "difficulty": "easy",
+        "tags": ["recipes", "terminology", "basics"]
+      },
+      {
+        "id": "je004",
+        "question": "How do you run the default recipe in a justfile?",
+        "choices": [
+          "just default",
+          "just run",
+          "just start",
+          "just (with no arguments)"
+        ],
+        "correctAnswer": 3,
+        "explanation": "Running 'just' without any arguments executes the first recipe in your justfile, or a recipe explicitly marked as default with '@default:'.",
+        "category": "Usage",
+        "difficulty": "easy",
+        "tags": ["usage", "default", "commands"]
+      },
+      {
+        "id": "je005",
+        "question": "Which of these is a benefit of using just over npm scripts?",
+        "choices": [
+          "It only works with JavaScript projects",
+          "It can work with any programming language or project type",
+          "It requires Node.js to be installed",
+          "It stores commands in package.json"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Unlike npm scripts which require Node.js and package.json, just is language-agnostic and works with any project type - Python, Rust, Go, or even non-code projects.",
+        "category": "Advantages",
+        "difficulty": "easy",
+        "tags": ["comparison", "npm", "advantages"]
+      },
+      {
+        "id": "je006",
+        "question": "How do you list all available recipes in a justfile?",
+        "choices": [
+          "just help",
+          "just --list",
+          "just show",
+          "just recipes"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Running 'just --list' (or 'just -l') shows all available recipes in your justfile with their descriptions, making it easy for team members to discover available commands.",
+        "category": "Usage",
+        "difficulty": "easy",
+        "tags": ["list", "discovery", "commands"]
+      },
+      {
+        "id": "je007",
+        "question": "What symbol is used to add a description to a recipe?",
+        "choices": [
+          "// for comments",
+          "# for comments above the recipe",
+          "-- for inline comments",
+          "/* */ for block comments"
+        ],
+        "correctAnswer": 1,
+        "explanation": "You add descriptions to recipes using # comments on the line immediately before the recipe. These descriptions appear when you run 'just --list'.",
+        "category": "Syntax",
+        "difficulty": "easy",
+        "tags": ["comments", "documentation", "syntax"]
+      },
+      {
+        "id": "je008",
+        "question": "What's a key advantage of just over bash scripts?",
+        "choices": [
+          "Just is slower but more reliable",
+          "Just provides better error handling and parameter passing",
+          "Just only works on Linux",
+          "Just requires more code to do the same thing"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Just provides built-in parameter handling, better error messages, automatic help text, and cross-platform compatibility that would require significant boilerplate in bash scripts.",
+        "category": "Advantages",
+        "difficulty": "easy",
+        "tags": ["comparison", "bash", "advantages"]
+      },
+      {
+        "id": "je009",
+        "question": "Can recipes in just call other recipes?",
+        "choices": [
+          "No, each recipe is completely independent",
+          "Yes, recipes can depend on and call other recipes",
+          "Only if they're in the same file",
+          "Only with special plugins"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Recipes can depend on other recipes using the syntax 'recipe-name: dependency-recipe'. This helps you compose complex workflows from simpler building blocks.",
+        "category": "Features",
+        "difficulty": "easy",
+        "tags": ["dependencies", "recipes", "composition"]
+      },
+      {
+        "id": "je010",
+        "question": "What happens if a recipe command fails?",
+        "choices": [
+          "Just continues to the next command",
+          "Just stops execution and reports the error",
+          "Just silently ignores it",
+          "Just retries automatically"
+        ],
+        "correctAnswer": 1,
+        "explanation": "By default, just stops execution when a command fails (returns non-zero exit code) and reports the error. This helps catch problems early rather than continuing with a broken state.",
+        "category": "Behavior",
+        "difficulty": "easy",
+        "tags": ["errors", "execution", "behavior"]
+      },
+      {
+        "id": "je011",
+        "question": "How do you pass arguments to a recipe?",
+        "choices": [
+          "just recipe --arg value",
+          "just recipe(value)",
+          "just recipe value",
+          "just -p value recipe"
+        ],
+        "correctAnswer": 2,
+        "explanation": "You pass arguments to recipes simply by adding them after the recipe name: 'just recipe-name arg1 arg2'. The recipe defines parameters to receive these values.",
+        "category": "Usage",
+        "difficulty": "easy",
+        "tags": ["arguments", "parameters", "usage"]
+      },
+      {
+        "id": "je012",
+        "question": "Which operating systems can run just?",
+        "choices": [
+          "Only Linux",
+          "Only Unix-like systems (Linux/Mac)",
+          "Linux, macOS, and Windows",
+          "Only systems with bash installed"
+        ],
+        "correctAnswer": 2,
+        "explanation": "Just is cross-platform and runs on Linux, macOS, and Windows. It handles platform differences automatically, making your commands portable across different systems.",
+        "category": "Compatibility",
+        "difficulty": "easy",
+        "tags": ["cross-platform", "compatibility", "operating-systems"]
+      },
+      {
+        "id": "je013",
+        "question": "What's the main philosophy behind just compared to Make?",
+        "choices": [
+          "Just is for building C/C++ projects",
+          "Just is a command runner, not a build system",
+          "Just replaces all build tools",
+          "Just only works with compiled languages"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Unlike Make which is designed as a build system with dependency tracking, just focuses on being a command runner - a way to save and run project commands without the complexity of build rules.",
+        "category": "Philosophy",
+        "difficulty": "easy",
+        "tags": ["philosophy", "make", "comparison"]
+      },
+      {
+        "id": "je014",
+        "question": "How does just help with onboarding new team members?",
+        "choices": [
+          "It automatically writes documentation",
+          "It provides a discoverable list of project commands",
+          "It teaches them programming",
+          "It configures their development environment"
+        ],
+        "correctAnswer": 1,
+        "explanation": "New team members can run 'just --list' to see all available project commands with descriptions, making it easy to discover how to run tests, build, deploy, etc. without searching through documentation.",
+        "category": "Team Benefits",
+        "difficulty": "easy",
+        "tags": ["onboarding", "team", "documentation"]
+      },
+      {
+        "id": "je015",
+        "question": "What language is just itself written in?",
+        "choices": [
+          "JavaScript",
+          "Python",
+          "Rust",
+          "Go"
+        ],
+        "correctAnswer": 2,
+        "explanation": "Just is written in Rust, which makes it fast, reliable, and produces a single binary that's easy to install without dependencies.",
+        "category": "Technical Details",
+        "difficulty": "easy",
+        "tags": ["rust", "implementation", "technical"]
+      }
+    ]
+  }

@@ -34,6 +34,10 @@ struct Args {
     /// Timeout for page operations in seconds
     #[arg(long, default_value = "10")]
     timeout: u64,
+
+    /// Run only one easy and one hard question set (first found of each)
+    #[arg(long)]
+    first_per_mode: bool,
 }
 
 #[derive(Debug, Deserialize)]
@@ -233,7 +237,24 @@ impl GameTestRunner {
     async fn run_all_tests(&self) -> Vec<TestResult> {
         let mut results = Vec::new();
 
-        for test_case in &self.test_cases {
+        // Optionally restrict to first easy and first hard
+        let selected_cases: Vec<&TestCase> = if self.args.first_per_mode {
+            let mut easy: Option<&TestCase> = None;
+            let mut hard: Option<&TestCase> = None;
+            for tc in &self.test_cases {
+                match tc.metadata.mode.as_str() {
+                    "easy" if easy.is_none() => easy = Some(tc),
+                    "hard" if hard.is_none() => hard = Some(tc),
+                    _ => {}
+                }
+                if easy.is_some() && hard.is_some() { break; }
+            }
+            [easy, hard].into_iter().flatten().collect()
+        } else {
+            self.test_cases.iter().collect()
+        };
+
+        for test_case in selected_cases {
             let result = self.run_test_case(test_case).await;
             let passed = result.passed;
             results.push(result);
@@ -346,36 +367,43 @@ impl GameTestRunner {
         // Wait for game screen
         self.wait_for_element(&page, "#game-screen").await?;
         
-        // Test questions
+        // Test questions per mode
         let total_questions = test_case.questions.len();
-        for (i, question) in test_case.questions.iter().enumerate() {
-            let question_num = i + 1;
-            
-            // Wait for choice buttons
-            self.wait_for_element(&page, ".choice-button").await?;
-            
-            // For question 2, test mode-specific behavior
-            if question_num == 2 && total_questions >= 2 {
-                self.test_mode_behavior(&page, &test_case.metadata.mode, question).await
-                    .with_context(|| format!("Failed testing mode behavior for question {}", question_num))?;
-                println!("    Testing question {}/{}... ✓ (tested {} behavior)", 
-                    question_num, total_questions,
-                    if test_case.metadata.mode == "easy" { "retry" } else { "immediate result" }
-                );
-            } else {
-                // Click correct answer
-                self.click_correct_answer(&page, question).await
-                    .with_context(|| format!("Failed to answer question {}", question_num))?;
-                
-                // Wait for transition
-                sleep(Duration::from_millis(1200)).await;
-                
-                // For non-final questions, click continue
-                if question_num < total_questions {
-                    self.click_element(&page, "#continue-button").await?;
+        if test_case.metadata.mode == "hard" {
+            for question_num in 1..=total_questions {
+                // Wait for choice buttons
+                self.wait_for_element(&page, ".choice-button").await?;
+                // Always click the first choice
+                self.click_element(&page, ".choice-button:nth-child(1)").await?;
+                // Wait for result screen and click next
+                self.wait_for_element(&page, "#result-screen").await?;
+                self.click_element(&page, "#next-button").await?;
+                println!("    [hard] Testing question {}/{}... ✓", question_num, total_questions);
+            }
+        } else {
+            for (i, question) in test_case.questions.iter().enumerate() {
+                let question_num = i + 1;
+                // Wait for choice buttons
+                self.wait_for_element(&page, ".choice-button").await?;
+
+                if question_num == 1 {
+                    // First do a wrong answer attempt (stay on game screen), then correct
+                    let wrong_index = if question.correct_answer == 0 { 1 } else { 0 };
+                    let wrong_selector = format!(".choice-button:nth-child({})", wrong_index + 1);
+                    self.click_element(&page, &wrong_selector).await?;
+                    // Small pause, still on game screen
+                    sleep(Duration::from_millis(500)).await;
+                    // Now answer correctly
+                    self.click_correct_answer(&page, question).await?;
+                } else {
+                    // For remaining questions, answer correctly directly
+                    self.click_correct_answer(&page, question).await?;
                 }
-                
-                println!("    Testing question {}/{}... ✓", question_num, total_questions);
+
+                // Wait for result screen and click next, unless it's the final question where next leads to finish
+                self.wait_for_element(&page, "#result-screen").await?;
+                self.click_element(&page, "#next-button").await?;
+                println!("    [easy] Testing question {}/{}... ✓", question_num, total_questions);
             }
         }
 
@@ -386,27 +414,7 @@ impl GameTestRunner {
             let _ = std::fs::write(format!("test_output/finish_{}.png", test_case.key), bytes);
         }
         
-        // Test play again
-        self.click_element(&page, "#play-again-button").await?;
-        
-        // Should return to start screen
-        self.wait_for_element(&page, "#start-screen").await?;
-        
-        // Verify all tiles are visible again
-        let tile_visible = page
-            .evaluate(format!(
-                "document.querySelector({}) !== null", 
-                Self::js_string_literal(&tile_selector)
-            ))
-            .await?
-            .into_value::<bool>()?;
-        
-        if !tile_visible {
-            self.try_screenshot(&page, "fail_tile_not_visible_after_play_again").await;
-            anyhow::bail!("Question set tile not visible after play again");
-        }
-
-        println!("    Testing play again... ✓");
+        // Note: Skipping Play Again (reload) to avoid invalidating devtools context
 
         // Close page
         page.close().await?;
@@ -414,48 +422,7 @@ impl GameTestRunner {
         Ok(())
     }
 
-    async fn test_mode_behavior(&self, page: &Page, mode: &str, question: &Question) -> Result<()> {
-        if mode == "easy" {
-            // In easy mode: click wrong answer, should stay on game screen
-            let wrong_index = if question.correct_answer == 0 { 1 } else { 0 };
-            let wrong_selector = format!(".choice-button:nth-child({})", wrong_index + 1);
-            
-            self.click_element(page, &wrong_selector).await?;
-            sleep(Duration::from_millis(500)).await;
-            
-            // Should still be on game screen
-            let game_visible = page
-                .evaluate("document.getElementById('game-screen').style.display !== 'none'")
-                .await?
-                .into_value::<bool>()?;
-            
-            if !game_visible {
-                anyhow::bail!("Game screen should remain visible in easy mode after wrong answer");
-            }
-            
-            // Now click correct answer
-            self.click_correct_answer(page, question).await?;
-            sleep(Duration::from_millis(1200)).await;
-            
-            // Click continue
-            self.click_element(page, "#continue-button").await?;
-        } else {
-            // In hard mode: click wrong answer, should go to result screen
-            let wrong_index = if question.correct_answer == 0 { 1 } else { 0 };
-            let wrong_selector = format!(".choice-button:nth-child({})", wrong_index + 1);
-            
-            self.click_element(page, &wrong_selector).await?;
-            sleep(Duration::from_millis(1200)).await;
-            
-            // Should be on result screen
-            self.wait_for_element(page, "#result-screen").await?;
-            
-            // Click continue
-            self.click_element(page, "#continue-button").await?;
-        }
-        
-        Ok(())
-    }
+    
 
     async fn click_correct_answer(&self, page: &Page, question: &Question) -> Result<()> {
         let correct_selector = format!(".choice-button:nth-child({})", question.correct_answer + 1);

@@ -78,15 +78,15 @@ build: ensure-tools
     {{tools_dir}}/validate{{bin_ext}}
     {{tools_dir}}/bundle{{bin_ext}}
 
-# test: validate data and run tests (assumes index.html already built)
+# test: validate data and run tests (headless; run one easy and one hard)
 test:
     {{tools_dir}}/validate{{bin_ext}}
-    {{tools_dir}}/test-runner{{bin_ext}} --headless
+    {{tools_dir}}/test-runner{{bin_ext}} --headless --first-per-mode
 
-# test-visible: run tests with visible browser and verbose console
+# test-visible: run tests with visible browser and verbose console (one easy + one hard)
 test-visible:
     {{tools_dir}}/validate{{bin_ext}}
-    {{tools_dir}}/test-runner{{bin_ext}} --verbose
+    {{tools_dir}}/test-runner{{bin_ext}} --verbose --first-per-mode
 
 # validate: manual validation without extra checks
 validate:

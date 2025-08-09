@@ -20,6 +20,7 @@ jobs:
         uses: extractions/setup-just@v1
 
       - name: Setup Chrome
+        id: chrome
         uses: browser-actions/setup-chrome@v1
 
       - name: Build tools (release)
@@ -33,7 +34,7 @@ jobs:
 
       - name: Test (headless)
         env:
-          CHROME: ${{ env.CHROME_PATH }}
+          CHROME: ${{ steps.chrome.outputs.chrome-path }}
         run: just test
 
 

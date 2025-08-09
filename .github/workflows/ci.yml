@@ -1,0 +1,41 @@
+name: CI (Build & Test)
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install just
+        uses: extractions/setup-just@v1
+
+      - name: Setup Chrome
+        id: chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Build tools (release)
+        run: just tools-build
+
+      - name: Install tools to .tools
+        run: just tools-install-local
+
+      - name: Build (validate + bundle)
+        run: just build
+
+      - name: Test (headless)
+        env:
+          CHROME: ${{ steps.chrome.outputs.chrome-path }}
+        run: just test
+
+
+

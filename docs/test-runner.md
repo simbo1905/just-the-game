@@ -1,5 +1,7 @@
 # Data-Driven Browser Test Runner
 
+Note: CI smoke PR to verify workflows. No functional changes.
+
 The `test-runner` is a Rust-based browser automation tool that dynamically discovers and tests all question sets in the `data/` directory without requiring any hardcoded test logic.
 
 ## Features

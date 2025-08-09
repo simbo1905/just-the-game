@@ -1,3 +1,0 @@
-pyppeteer
-jinja2
-jsonschema

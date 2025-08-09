@@ -17,83 +17,79 @@ An educational flash-card game to learn the Just command runner. Practice concep
 ├── index.html          # Main game interface
 ├── js/
 │   ├── game-engine.js  # Core game logic
-│   └── ui.js          # User interface handlers
+│   └── ui.js           # User interface handlers
 ├── data/
-│   ├── schema.json    # JSON schema for knowledge base
-│   └── questions.json # Game questions and answers
+│   ├── schema.json     # JSON schema for knowledge base
+│   └── questions_*.json# Game questions and answers
 ├── css/
-│   └── style.css      # Basic styling
-└── tests/
-    └── puppeteer/     # Automated tests
+│   └── style.css       # Basic styling
+└── templates/
+    └── index.hbs       # Handlebars template used by the bundler
 ```
 
 ## Development
 
-This project uses [Just](https://github.com/casey/just) as its command runner.
+This project uses [Just](https://github.com/casey/just) as its command runner and small Rust tools for validation, bundling, and testing. No Python is required.
+
+### Prerequisites
+
+- [Just](https://github.com/casey/just#installation)
 
 ### Quick Start
 
 ```bash
-# Install Just (if not already installed)
-# macOS: brew install just
-# Linux: See https://github.com/casey/just#installation
-
-# Set up development environment
+# 1) Download platform tools into .tools (from GitHub Releases)
 just setup
-source venv/bin/activate  # or venv\Scripts\activate on Windows
-just install
 
-# Build and test
-just build    # Bundle everything into index.html
-just test     # Run all tests (builds automatically)
-just serve    # Start local server at http://localhost:8000
+# 2) Clean, build, and test
+just clean
+just build     # Validates data and generates index.html
+just test      # Runs the Rust browser tests
+
+# Optional
+just validate  # Validate JSON files against schema
 ```
 
 ### Available Commands
 
 ```bash
-just          # List all available commands
-just setup    # Create Python virtual environment
-just install  # Install Python dependencies
-just build    # Bundle all resources into index.html
-just test     # Run all tests (unit then integration)
-just test-unit        # Run only unit tests
-just test-integration # Run only integration tests
-just test-one FILE    # Run a single test file
-just clean    # Remove generated files
-just verify   # Check build info
-just serve    # Start HTTP server for testing
-just dev      # Build and start server
+just           # List commands
+just setup     # Download platform-specific tools into .tools (from releases)
+just clean     # Remove generated files
+just build     # Validate JSON and bundle assets into index.html
+just validate  # Validate JSON files against schema
+just test      # Run browser tests via Rust test-runner
 ```
 
 ## Build and Test Workflow
 
-The build process bundles all resources (CSS, JS, JSON) into a single `index.html` file:
+The build process validates JSON files and bundles all resources (CSS, JS, JSON) into a single `index.html` file:
 
 ```bash
-just build    # Creates index.html from templates and resources
+just build     # Validates and bundles
 ```
 
-Run tests with guaranteed fresh builds:
+The tools are:
+- `validate` - Validates JSON question files against the schema
+- `bundle` - Bundles resources into a single HTML file using Handlebars templating
+
+Run tests:
 
 ```bash
-just test     # Automatically builds first, then runs all tests
+just test      # Runs the Rust test-runner against index.html
 ```
-
-⚠️ WARNING: Tests run against the bundled `index.html` file. Always use `just test` commands which handle building automatically.
-
-Test a single file:
-```bash
-just test-one tests/unit_test_example.py
-```
-
-Verify build info:
-```bash
-just verify   # Check embedded timestamps and version
-```
-
-The pack script embeds build timestamps and version info to verify the build process is working correctly. Check the bottom-right corner of the generated HTML page for build info, and browser console for debug logs.
 
 ## Usage
 
 Open `index.html` in any modern web browser.
+
+## Contributing (Tools Development)
+
+If you need to develop the tools themselves, use:
+
+```bash
+just tools:build           # Build Rust tools locally
+just tools:install-local   # Copy built tools into .tools/
+```
+
+Then re-run `just build` and `just test`.

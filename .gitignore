@@ -24,3 +24,12 @@ CLAUDE.md
 .claude
 
 .prompt.zsh
+
+
+# Added by cargo
+
+/target
+
+# Downloaded pre-built tools
+.tools/
+.tool/

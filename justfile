@@ -1,148 +1,112 @@
-# Just The Game - Build System
+# Just The Game - Build System (no Python)
 
-# Use bash for recipes that rely on bashisms
+# Use bash for recipes
 set shell := ["bash", "-c"]
 
-# Default recipe - show available commands
+# Default: list commands
 default:
     @just --list
 
-# Use venv-managed tools by default
-python := "venv/bin/python3"
-pip := "venv/bin/pip"
+# Platform detection for tool downloads
+os := os()
+arch := arch()
+platform := if os == "linux" { if arch == "x86_64" { "linux-x64" } else if arch == "aarch64" { "linux-aarch64" } else { "linux-" + arch } } else if os == "macos" { if arch == "x86_64" { "macos-x64" } else { "macos-aarch64" } } else if os == "windows" { "windows-x64" } else { error("Unsupported platform: " + os + "-" + arch) }
+bin_ext := if os == "windows" { ".exe" } else { "" }
+tools_dir := ".tools"
 
-# Set up Python virtual environment and install dependencies
+# -----------------------------------------------------------------------------
+# End-user workflow
+# -----------------------------------------------------------------------------
+
+# setup: Download prebuilt tools into .tools
+# TODO: Wire this to your GitHub Releases. See below for placeholder.
 setup:
-    python3 -m venv venv
-    @echo "Virtual environment created."
-    @echo "Installing dependencies..."
-    {{pip}} install -r requirements.txt
-    @echo ""
-    @echo "Setup complete! Activate the environment with:"
-    @echo "  source venv/bin/activate  # On macOS/Linux"
-    @echo "  venv\\Scripts\\activate    # On Windows"
-
-# Install Python dependencies
-install:
-    {{pip}} install -r requirements.txt
-
-# Clean generated files and test output
-clean:
-    rm -rf test_output/
-    @echo "Cleaned test output directory"
-
-# Build the project - bundle everything into index.html
-build:
-    {{python}} pack_project.py
-
-# Run all tests (builds first, then runs unit tests, then integration tests)
-test: build
-    RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; BLUE='\033[0;34m'; NC='\033[0m'; \
-    echo -e "$BLUE🚀 Starting Test Runner$NC"; \
-    echo "=================================================="; \
-    rm -rf test_output; mkdir -p test_output; \
-    echo -e "\n$YELLOW📋 Running Unit Tests (Fast)$NC"; \
-    echo "--------------------------------------------------"; \
-    unit_failed=0; unit_total=0; \
-    for test_file in $(find tests -name 'unit_test*.py' -type f | sort); do \
-        unit_total=$((unit_total+1)); \
-        test_name=$(basename "$test_file" .py); \
-        output_file="test_output/$test_name.log"; \
-        echo -n "Running $test_name... "; \
-        if {{python}} tests/run_one_test.py "$test_file" > "$output_file" 2>&1; then \
-            echo -e "$GREEN✅ PASSED$NC"; \
-        else \
-            echo -e "$RED❌ FAILED$NC"; \
-            echo "  See: $output_file"; \
-            unit_failed=$((unit_failed+1)); \
-        fi; \
-    done; \
-    echo ""; \
-    if [ $unit_failed -ne 0 ]; then \
-        echo -e "$RED❌ $unit_failed of $unit_total unit tests failed$NC"; \
-        echo -e "$REDStopping here - fix unit tests before running integration tests$NC"; \
-        exit 1; \
-    else \
-        echo -e "$GREEN🎉 All $unit_total unit tests passed!$NC"; \
-        echo ""; \
-    fi; \
-    echo -e "$YELLOW🔧 Running Integration Tests (Slow)$NC"; \
-    echo "--------------------------------------------------"; \
-    integration_failed=0; integration_total=0; \
-    for test_file in $(find tests -name 'integration_test_*.py' -type f | sort); do \
-        integration_total=$((integration_total+1)); \
-        test_name=$(basename "$test_file" .py); \
-        output_file="test_output/$test_name.log"; \
-        echo -n "Running $test_name... "; \
-        if {{python}} tests/run_one_test.py "$test_file" > "$output_file" 2>&1; then \
-            echo -e "$GREEN✅ PASSED$NC"; \
-        else \
-            echo -e "$RED❌ FAILED$NC"; \
-            echo "  See: $output_file"; \
-            integration_failed=$((integration_failed+1)); \
-        fi; \
-    done; \
-    echo ""; \
-    echo "=================================================="; \
-    echo -e "$BLUE📊 Test Summary$NC"; \
-    echo "=================================================="; \
-    echo -e "Unit Tests:        $GREEN$((unit_total - unit_failed))/$unit_total passed$NC"; \
-    if [ $integration_total -gt 0 ]; then \
-        if [ $integration_failed -eq 0 ]; then \
-            echo -e "Integration Tests: $GREEN$((integration_total - integration_failed))/$integration_total passed$NC"; \
-        else \
-            echo -e "Integration Tests: $RED$((integration_total - integration_failed))/$integration_total passed$NC"; \
-        fi; \
-    fi; \
-    if [ $integration_failed -eq 0 ]; then \
-        echo -e "\n$GREEN🎉 All tests passed!$NC"; \
-        exit 0; \
-    else \
-        echo -e "\n$RED❌ Some integration tests failed$NC"; \
-        exit 1; \
+    #!/usr/bin/env bash
+    set -euo pipefail
+    mkdir -p "{{tools_dir}}"
+    echo "📦 Setting up tools for {{platform}}..."
+    OWNER_REPO="${TOOLS_OWNER_REPO:-}"
+    VERSION="${TOOLS_VERSION:-latest}"
+    AUTH_TOKEN="${GITHUB_TOKEN:-${GH_TOKEN:-}}"
+    if [[ -z "$OWNER_REPO" ]]; then
+      echo "❌ TO DO: Set TOOLS_OWNER_REPO=owner/repo or edit the justfile to configure download URL."
+      echo "   Alternatively, build locally: 'just tools:build tools:install-local'"
+      exit 1
     fi
+    ARCHIVE_EXT={{ if os == "windows" { "zip" } else { "tar.gz" } }}
+    if [[ "$VERSION" == "latest" ]]; then
+      VERSION=$(curl -s https://api.github.com/repos/$OWNER_REPO/releases/latest | grep -oE '"tag_name":\s*"[^"]+"' | cut -d '"' -f4 || true)
+    fi
+    if [[ -z "$VERSION" ]]; then
+      echo "❌ Could not resolve version from GitHub Releases for $OWNER_REPO"
+      echo "   If your release is a DRAFT, set TOOLS_VERSION to its tag and GITHUB_TOKEN to an access token."
+      echo "   Or build locally: 'just tools-build tools-install-local'"
+      exit 1
+    fi
+    URL="https://github.com/$OWNER_REPO/releases/download/${VERSION}/just-learn-just-tools-{{platform}}.${ARCHIVE_EXT}"
+    echo "📥 Downloading: $URL"
+    CURL_AUTH=()
+    if [[ -n "$AUTH_TOKEN" ]]; then CURL_AUTH=( -H "Authorization: Bearer $AUTH_TOKEN" ); fi
+    if [[ "{{os}}" == "windows" ]]; then
+      curl -L "${CURL_AUTH[@]}" -o "{{tools_dir}}/tools.zip" "$URL" && (cd "{{tools_dir}}" && unzip -q tools.zip && rm tools.zip) || { echo "❌ Download or extract failed"; exit 1; }
+    else
+      curl -L "${CURL_AUTH[@]}" "$URL" | tar -xz -C "{{tools_dir}}" || { echo "❌ Download or extract failed"; exit 1; }
+    fi
+    if [[ "{{os}}" != "windows" ]]; then chmod +x "{{tools_dir}}"/* || true; fi
+    echo "✅ Tools installed in {{tools_dir}}"
 
-# Run only unit tests
-test-unit: build
-    @echo "Running unit tests..."
-    @for test in tests/unit_test*.py; do \
-        if [ -f "$test" ]; then \
-            echo -n "Running $(basename $test)... "; \
-            if {{python}} tests/run_one_test.py "$test" > /dev/null 2>&1; then \
-                echo "✅ PASSED"; \
-            else \
-                echo "❌ FAILED"; \
-                exit 1; \
-            fi; \
-        fi; \
+# clean: remove generated artifacts
+clean:
+    rm -f index.html
+    @echo "Cleaned generated files"
+
+# Internal guard: ensure tools exist and fail fast otherwise
+ensure-tools:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    for bin in bundle validate test-runner; do
+      if [[ ! -x "{{tools_dir}}/${bin}{{bin_ext}}" ]]; then
+        echo "❌ Missing tool: {{tools_dir}}/${bin}{{bin_ext}}"
+        echo "   Run 'just setup' (downloads from GitHub Releases)"
+        echo "   Or build locally: 'just tools:build tools:install-local'"
+        exit 1
+      fi
     done
 
-# Run only integration tests
-test-integration: build
-    @echo "Running integration tests..."
-    @for test in tests/integration_test_*.py; do \
-        if [ -f "$test" ]; then \
-            echo -n "Running $(basename $test)... "; \
-            if {{python}} tests/run_one_test.py "$test" > /dev/null 2>&1; then \
-                echo "✅ PASSED"; \
-            else \
-                echo "❌ FAILED"; \
-            fi; \
-        fi; \
+# build: validate JSON then bundle (fails fast if tools missing)
+build: ensure-tools
+    {{tools_dir}}/validate{{bin_ext}}
+    {{tools_dir}}/bundle{{bin_ext}}
+
+# test: validate data and run tests (assumes index.html already built)
+test:
+    {{tools_dir}}/validate{{bin_ext}}
+    {{tools_dir}}/test-runner{{bin_ext}} --headless
+
+# test-visible: run tests with visible browser and verbose console
+test-visible:
+    {{tools_dir}}/validate{{bin_ext}}
+    {{tools_dir}}/test-runner{{bin_ext}} --verbose
+
+# validate: manual validation without extra checks
+validate:
+    {{tools_dir}}/validate{{bin_ext}}
+
+# -----------------------------------------------------------------------------
+# Tooling for contributors (local builds of the Rust tools)
+# -----------------------------------------------------------------------------
+
+tools-build:
+    cargo build --release --bins
+
+tools-install-local:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    mkdir -p "{{tools_dir}}"
+    for bin in bundle validate test-runner; do
+      src="target/release/${bin}{{bin_ext}}"
+      if [[ ! -f "$src" ]]; then echo "❌ Missing built binary: $src"; exit 1; fi
+      cp "$src" "{{tools_dir}}/";
     done
-
-# Run a single test file
-test-one FILE: build
-    {{python}} tests/run_one_test.py {{FILE}}
-
-# Verify build info
-verify: build
-    {{python}} test_build_info.py
-
-# Start a simple HTTP server for local testing
-serve: build
-    @echo "Starting server at http://localhost:8000"
-    {{python}} -m http.server 8000
-
-# Run build and start server
-dev: build serve
+    if [[ "{{os}}" != "windows" ]]; then chmod +x "{{tools_dir}}"/* || true; fi
+    echo "✅ Installed local tools into {{tools_dir}}"

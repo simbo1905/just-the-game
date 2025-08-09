@@ -1,0 +1,241 @@
+name: Build and Release Tools
+
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger on version tags
+  pull_request:
+    branches: [main]
+  workflow_dispatch:  # Allow manual triggers
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Linux x64 with GNU
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            artifact_name: linux-x64
+            binary_extension: ""
+
+          # Linux x64 with musl (static linking)
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+            artifact_name: linux-x64-musl
+            binary_extension: ""
+            setup: sudo apt-get update && sudo apt-get install -y musl-tools
+
+          # macOS Intel
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            artifact_name: macos-x64
+            binary_extension: ""
+
+          # macOS Apple Silicon
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            artifact_name: macos-aarch64
+            binary_extension: ""
+
+          # Windows
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            artifact_name: windows-x64
+            binary_extension: ".exe"
+
+          # Linux ARM64 (optional, requires cross-compilation)
+          - os: ubuntu-latest
+            target: aarch64-unknown-linux-gnu
+            artifact_name: linux-aarch64
+            binary_extension: ""
+            use_cross: true
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup prerequisites
+        if: matrix.setup
+        run: ${{ matrix.setup }}
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Cache cargo registry
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Install cross (for cross-compilation)
+        if: matrix.use_cross
+        run: cargo install cross --git https://github.com/cross-rs/cross
+
+      - name: Build with cargo
+        if: '!matrix.use_cross'
+        run: |
+          cargo build --release --target ${{ matrix.target }} --bin validate
+          cargo build --release --target ${{ matrix.target }} --bin bundle
+          cargo build --release --target ${{ matrix.target }} --bin test-runner
+
+      - name: Build with cross
+        if: matrix.use_cross
+        run: |
+          cross build --release --target ${{ matrix.target }} --bin validate
+          cross build --release --target ${{ matrix.target }} --bin bundle
+          cross build --release --target ${{ matrix.target }} --bin test-runner
+
+      - name: Prepare artifacts (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          mkdir -p artifacts
+          cp target/${{ matrix.target }}/release/validate artifacts/validate${{ matrix.binary_extension }}
+          cp target/${{ matrix.target }}/release/bundle artifacts/bundle${{ matrix.binary_extension }}
+          cp target/${{ matrix.target }}/release/test-runner artifacts/test-runner${{ matrix.binary_extension }}
+          # Make them executable
+          chmod +x artifacts/*
+          # Create archive
+          cd artifacts
+          tar -czf ../just-learn-just-tools-${{ matrix.artifact_name }}.tar.gz *
+          cd ..
+
+      - name: Prepare artifacts (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          mkdir -p artifacts
+          cp target/${{ matrix.target }}/release/validate.exe artifacts/validate.exe
+          cp target/${{ matrix.target }}/release/bundle.exe artifacts/bundle.exe
+          cp target/${{ matrix.target }}/release/test-runner.exe artifacts/test-runner.exe
+          # Create zip for Windows
+          cd artifacts
+          7z a ../just-learn-just-tools-${{ matrix.artifact_name }}.zip *
+          cd ..
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: just-learn-just-tools-${{ matrix.artifact_name }}
+          path: |
+            just-learn-just-tools-${{ matrix.artifact_name }}.tar.gz
+            just-learn-just-tools-${{ matrix.artifact_name }}.zip
+          if-no-files-found: error
+
+  test-binaries:
+    name: Test ${{ matrix.os }} binaries
+    needs: build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    
+    steps:
+      - name: Download artifacts for platform
+        uses: actions/download-artifact@v4
+        with:
+          pattern: just-learn-just-tools-*
+          path: tools
+
+      - name: Test binaries (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          # Find and extract the appropriate archive
+          if [[ "${{ runner.os }}" == "Linux" ]]; then
+            archive=$(find tools -name "*linux-x64.tar.gz" | head -1)
+          else
+            archive=$(find tools -name "*macos-*.tar.gz" | head -1)
+          fi
+          
+          echo "Testing archive: $archive"
+          tar -xzf "$archive"
+          
+          # Test each tool
+          ./validate --help
+          ./bundle --help
+          ./test-runner --help
+
+      - name: Test binaries (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          # Find and extract the Windows archive
+          archive=$(find tools -name "*windows-x64.zip" | head -1)
+          echo "Testing archive: $archive"
+          7z x "$archive"
+          
+          # Test each tool
+          ./validate.exe --help
+          ./bundle.exe --help
+          ./test-runner.exe --help
+
+  # Create a release when a tag is pushed
+  release:
+    name: Create Release
+    needs: [build, test-binaries]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: artifacts/**/*.{tar.gz,zip}
+          draft: false
+          prerelease: true
+          generate_release_notes: true
+          body: |
+            # Just Learn Just Build Tools
+
+            Pre-compiled binaries for all platforms. Download the appropriate archive for your system:
+
+            ## 🐧 Linux
+            - `just-learn-just-tools-linux-x64.tar.gz` - Standard Linux x64
+            - `just-learn-just-tools-linux-x64-musl.tar.gz` - Static build (works on Alpine, etc.)
+            - `just-learn-just-tools-linux-aarch64.tar.gz` - Linux ARM64
+
+            ## 🍎 macOS
+            - `just-learn-just-tools-macos-x64.tar.gz` - Intel Macs
+            - `just-learn-just-tools-macos-aarch64.tar.gz` - Apple Silicon (M1/M2/M3)
+
+            ## 🪟 Windows
+            - `just-learn-just-tools-windows-x64.zip` - Windows x64
+
+            ## Usage
+
+            Extract the archive and add the tools to your PATH, or use them directly:
+
+            ```bash
+            # Linux/macOS
+            tar -xzf just-learn-just-tools-*.tar.gz
+            ./validate
+            ./bundle
+            ./test-runner
+
+            # Windows
+            # Extract the zip file, then:
+            validate.exe
+            bundle.exe
+            test-runner.exe
+            ```
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

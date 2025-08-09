@@ -19,23 +19,18 @@ tools_dir := ".tools"
 # -----------------------------------------------------------------------------
 
 # setup: Download prebuilt tools into .tools
-# TODO: Wire this to your GitHub Releases. See below for placeholder.
 setup:
     #!/usr/bin/env bash
     set -euo pipefail
     mkdir -p "{{tools_dir}}"
     echo "📦 Setting up tools for {{platform}}..."
-    OWNER_REPO="${TOOLS_OWNER_REPO:-}"
+    OWNER_REPO="${TOOLS_OWNER_REPO:-simbo1905/new-repo}"
     VERSION="${TOOLS_VERSION:-latest}"
     AUTH_TOKEN="${GITHUB_TOKEN:-${GH_TOKEN:-}}"
-    if [[ -z "$OWNER_REPO" ]]; then
-      echo "❌ TO DO: Set TOOLS_OWNER_REPO=owner/repo or edit the justfile to configure download URL."
-      echo "   Alternatively, build locally: 'just tools:build tools:install-local'"
-      exit 1
-    fi
+    # If using latest, prefer the latest non-prerelease; otherwise allow explicit tag
     ARCHIVE_EXT={{ if os == "windows" { "zip" } else { "tar.gz" } }}
     if [[ "$VERSION" == "latest" ]]; then
-      VERSION=$(curl -s https://api.github.com/repos/$OWNER_REPO/releases/latest | grep -oE '"tag_name":\s*"[^"]+"' | cut -d '"' -f4 || true)
+      VERSION=$(curl -s https://api.github.com/repos/$OWNER_REPO/releases | jq -r '[.[] | select(.prerelease == false)][0].tag_name')
     fi
     if [[ -z "$VERSION" ]]; then
       echo "❌ Could not resolve version from GitHub Releases for $OWNER_REPO"

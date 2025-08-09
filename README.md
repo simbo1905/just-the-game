@@ -39,7 +39,7 @@ This project uses [Just](https://github.com/casey/just) as its command runner an
 
 ```bash
 # 1) Download platform tools into .tools (from GitHub Releases)
-just setup
+just setup   # fetches binaries from the latest GitHub Release for this repo
 
 # 2) Clean, build, and test
 just clean
@@ -93,3 +93,29 @@ just tools:install-local   # Copy built tools into .tools/
 ```
 
 Then re-run `just build` and `just test`.
+
+## Binary Distribution and Releases
+
+This project publishes prebuilt binaries for `validate`, `bundle`, and `test-runner` as GitHub Release assets.
+
+- End users run `just setup` to download platform-specific binaries into `.tools/` without compiling Rust.
+- Power users can still build from source with `just tools-build tools-install-local`.
+
+### Release Flow (Maintainers)
+
+Checklist for a preview release:
+
+1. Ensure CI green on `main`.
+2. Create a tag: `git tag v0.0.1 && git push --tags`.
+3. GitHub Actions workflow `Build and Release Tools` will:
+   - Build binaries for Linux/macOS/Windows targets from the tag
+   - Package artifacts and create a GitHub Release
+   - Mark it as a prerelease with auto-generated release notes
+4. Verify release assets appear on the tag’s release page.
+
+To promote to latest for end users (so `just setup` finds it):
+
+5. Edit the release on GitHub and uncheck "This is a pre-release" to mark it as a final release.
+6. Optionally create a new tag for a stable release.
+
+`just setup` uses the GitHub API to fetch the latest non-prerelease release and downloads the archive matching your platform (e.g., `just-learn-just-tools-macos-aarch64.tar.gz`).

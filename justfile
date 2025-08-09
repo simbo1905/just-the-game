@@ -24,13 +24,13 @@ setup:
     set -euo pipefail
     mkdir -p "{{tools_dir}}"
     echo "📦 Setting up tools for {{platform}}..."
-    OWNER_REPO="${TOOLS_OWNER_REPO:-simbo1905/new-repo}"
+    OWNER_REPO="${TOOLS_OWNER_REPO:-simbo1905/just-the-game}"
     VERSION="${TOOLS_VERSION:-latest}"
     AUTH_TOKEN="${GITHUB_TOKEN:-${GH_TOKEN:-}}"
     # If using latest, prefer the latest non-prerelease; otherwise allow explicit tag
     ARCHIVE_EXT={{ if os == "windows" { "zip" } else { "tar.gz" } }}
     if [[ "$VERSION" == "latest" ]]; then
-      VERSION=$(curl -s https://api.github.com/repos/$OWNER_REPO/releases | jq -r '[.[] | select(.prerelease == false)][0].tag_name')
+      VERSION=$(curl -s https://api.github.com/repos/$OWNER_REPO/releases/latest | grep -oE '"tag_name":\s*"[^"]+"' | cut -d '"' -f4 || true)
     fi
     if [[ -z "$VERSION" ]]; then
       echo "❌ Could not resolve version from GitHub Releases for $OWNER_REPO"

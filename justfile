@@ -88,7 +88,13 @@ setup:
         if [[ -n "$auth_token" ]]; then curl_auth=( -H "Authorization: Bearer $auth_token" ); fi
         
         # Try download
-        if curl -f -L "${curl_auth[@]}" -o "{{tools_dir}}/tools.${archive_ext}" "$url" 2>/dev/null; then
+        if [[ -n "$auth_token" ]]; then
+            curl_result=$(curl -f -L "${curl_auth[@]}" -o "{{tools_dir}}/tools.${archive_ext}" "$url" 2>/dev/null && echo "success" || echo "fail")
+        else
+            curl_result=$(curl -f -L -o "{{tools_dir}}/tools.${archive_ext}" "$url" 2>/dev/null && echo "success" || echo "fail")
+        fi
+        
+        if [[ "$curl_result" == "success" ]]; then
             # Extract
             if [[ "{{os}}" == "windows" ]]; then
                 (cd "{{tools_dir}}" && unzip -q "tools.${archive_ext}" && rm "tools.${archive_ext}") || return 1
@@ -106,7 +112,7 @@ setup:
     }
     
     # Cascading fallback strategy
-    TEMPLATE_REPO="${TEMPLATE_REPO:-simbo1905/just-the-game}"
+    TEMPLATE_REPO="${TEMPLATE_REPO:-simbo1905/just-learn-just}"
     USER_REPO="${USER_REPO:-}"
     
     # If USER_REPO not set, try to detect from git remote

@@ -1,0 +1,194 @@
+# Build and Release Tools Workflow
+# ================================
+# 
+# IMPORTANT: This workflow is THE TEMPLATE for building Just The Game tools across all platforms.
+#
+# PATTERN:
+# 1. The original template repository (simbo1905/just-the-game) uses this to build tools
+# 2. Anyone who forks/clones gets this same workflow
+# 3. They can either:
+#    a) Use tools from the original template repo (default)
+#    b) Build and release their own tools (becoming a new template)
+#    c) Just use it for their own project
+#
+# The beauty is EVERYONE has the SAME workflow file, so anyone can become a template provider.
+# The justfile's cascading fallback (template repo → current repo → local build) makes it all work.
+#
+# TRIGGERING:
+# - Push to main with version tag (e.g., v1.0.0)
+# - Manual workflow dispatch
+#
+# OUTPUTS:
+# - Releases with platform-specific tool archives:
+#   - just-learn-just-tools-linux-x64.tar.gz
+#   - just-learn-just-tools-linux-aarch64.tar.gz  
+#   - just-learn-just-tools-macos-x64.tar.gz
+#   - just-learn-just-tools-macos-aarch64.tar.gz
+#   - just-learn-just-tools-windows-x64.zip
+
+name: Build and Release Tools
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release tag (e.g., v1.0.0)'
+        required: false
+        type: string
+
+jobs:
+  build:
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          # Linux x64
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            platform: linux-x64
+            archive: tar.gz
+            
+          # Linux ARM64 (cross-compiled)
+          - os: ubuntu-latest
+            target: aarch64-unknown-linux-gnu
+            platform: linux-aarch64
+            archive: tar.gz
+            use_cross: true
+            
+          # macOS x64
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            platform: macos-x64
+            archive: tar.gz
+            
+          # macOS ARM64
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            platform: macos-aarch64
+            archive: tar.gz
+            
+          # Windows x64
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            platform: windows-x64
+            archive: zip
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      
+      # Install cross for cross-compilation
+      - name: Install cross
+        if: matrix.use_cross == true
+        run: |
+          cargo install cross --git https://github.com/cross-rs/cross
+      
+      # Build the tools
+      - name: Build tools
+        run: |
+          if [ "${{ matrix.use_cross }}" = "true" ]; then
+            cross build --release --target ${{ matrix.target }} --bins
+          else
+            cargo build --release --target ${{ matrix.target }} --bins
+          fi
+        shell: bash
+      
+      # Prepare release directory
+      - name: Prepare release
+        run: |
+          mkdir -p release
+          # Copy all built binaries
+          for bin in bundle validate test-runner; do
+            if [ "${{ matrix.os }}" = "windows-latest" ]; then
+              cp target/${{ matrix.target }}/release/${bin}.exe release/
+            else
+              cp target/${{ matrix.target }}/release/${bin} release/
+            fi
+          done
+          
+          # Make binaries executable on Unix
+          if [ "${{ matrix.os }}" != "windows-latest" ]; then
+            chmod +x release/*
+          fi
+        shell: bash
+      
+      # Create archive
+      - name: Create archive
+        run: |
+          cd release
+          if [ "${{ matrix.archive }}" = "zip" ]; then
+            # Windows ZIP
+            7z a ../just-learn-just-tools-${{ matrix.platform }}.zip *
+          else
+            # Unix tar.gz
+            tar czf ../just-learn-just-tools-${{ matrix.platform }}.tar.gz *
+          fi
+        shell: bash
+      
+      # Upload artifact for release
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: just-learn-just-tools-${{ matrix.platform }}
+          path: just-learn-just-tools-${{ matrix.platform }}.${{ matrix.archive }}
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event.inputs.release_tag != ''
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      # Download all artifacts
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      
+      # Determine release tag
+      - name: Set release tag
+        id: set_tag
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          else
+            echo "tag=${{ github.event.inputs.release_tag }}" >> $GITHUB_OUTPUT
+          fi
+      
+      # Create release
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.set_tag.outputs.tag }}
+          name: Tools Release ${{ steps.set_tag.outputs.tag }}
+          body: |
+            ## Just The Game Tools
+            
+            Multi-platform release of the build tools:
+            - `bundle` - Bundles the game into a single HTML file
+            - `validate` - Validates JSON data against schema
+            - `test-runner` - Runs browser-based tests
+            
+            ### Installation
+            
+            Run `just setup` to automatically download the correct tools for your platform.
+            
+            ### Platforms
+            - Linux x64 / ARM64
+            - macOS x64 / ARM64 (Apple Silicon)
+            - Windows x64
+          files: |
+            artifacts/*/*.tar.gz
+            artifacts/*/*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

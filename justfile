@@ -71,9 +71,11 @@ setup:
         # Resolve version
         if [[ "$version" == "latest" ]]; then
             local version_url="https://api.github.com/repos/$owner_repo/releases/latest"
-            local curl_auth=()
-            if [[ -n "$auth_token" ]]; then curl_auth=( -H "Authorization: Bearer $auth_token" ); fi
-            version=$(curl -s "${curl_auth[@]}" "$version_url" | grep -oE '"tag_name":\s*"[^"]+"' | cut -d '"' -f4 || true)
+            if [[ -n "$auth_token" ]]; then
+                version=$(curl -s -H "Authorization: Bearer $auth_token" "$version_url" | grep -oE '"tag_name":\s*"[^"]+"' | cut -d '"' -f4 || true)
+            else
+                version=$(curl -s "$version_url" | grep -oE '"tag_name":\s*"[^"]+"' | cut -d '"' -f4 || true)
+            fi
         fi
         
         if [[ -z "$version" ]]; then
@@ -84,17 +86,22 @@ setup:
         local url="https://github.com/$owner_repo/releases/download/${version}/just-learn-just-tools-{{platform}}.${archive_ext}"
         echo "   📥 Downloading version $version..."
         
-        local curl_auth=()
-        if [[ -n "$auth_token" ]]; then curl_auth=( -H "Authorization: Bearer $auth_token" ); fi
-        
         # Try download
         if [[ -n "$auth_token" ]]; then
-            curl_result=$(curl -f -L "${curl_auth[@]}" -o "{{tools_dir}}/tools.${archive_ext}" "$url" 2>/dev/null && echo "success" || echo "fail")
+            if curl -f -L -H "Authorization: Bearer $auth_token" -o "{{tools_dir}}/tools.${archive_ext}" "$url" 2>/dev/null; then
+                local download_success=true
+            else
+                local download_success=false
+            fi
         else
-            curl_result=$(curl -f -L -o "{{tools_dir}}/tools.${archive_ext}" "$url" 2>/dev/null && echo "success" || echo "fail")
+            if curl -f -L -o "{{tools_dir}}/tools.${archive_ext}" "$url" 2>/dev/null; then
+                local download_success=true
+            else
+                local download_success=false
+            fi
         fi
         
-        if [[ "$curl_result" == "success" ]]; then
+        if [[ "$download_success" == "true" ]]; then
             # Extract
             if [[ "{{os}}" == "windows" ]]; then
                 (cd "{{tools_dir}}" && unzip -q "tools.${archive_ext}" && rm "tools.${archive_ext}") || return 1
@@ -112,7 +119,7 @@ setup:
     }
     
     # Cascading fallback strategy
-    TEMPLATE_REPO="${TEMPLATE_REPO:-simbo1905/just-learn-just}"
+    TEMPLATE_REPO="${TEMPLATE_REPO:-simbo1905/just-the-game}"
     USER_REPO="${USER_REPO:-}"
     
     # If USER_REPO not set, try to detect from git remote

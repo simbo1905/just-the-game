@@ -42,10 +42,17 @@ on:
 permissions:
   contents: write  # Required for creating releases
 
+# Release workflow: serialise per ref, never cancel a run that is mid-publish.
+# Revert: drop this concurrency block to restore unsynchronised behaviour.
+concurrency:
+  group: build-and-release-tools-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   build:
     name: Build ${{ matrix.target }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
     strategy:
       matrix:
         include:
@@ -147,6 +154,7 @@ jobs:
     name: Create Release
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     if: github.event_name == 'push' || github.event.inputs.release_tag != ''
     
     steps:

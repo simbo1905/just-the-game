@@ -4,11 +4,23 @@ on:
   pull_request:
   push:
     branches: [ main ]
+    # Docs-only pushes to main skip the full Rust build + headless Chrome suite.
+    # pull_request stays unfiltered so every PR is still fully verified.
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
   workflow_dispatch:
+
+# Cancel superseded runs for the same ref, so a burst of pushes does not pay for
+# several concurrent Rust + Chrome test runs.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
